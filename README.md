@@ -17,10 +17,10 @@ A web-based application designed for public libraries to manage books, members, 
 - **User Access:** Search books and view availability.
 - **Non-Functional:** Secure, scalable, and responsive design.
 
-## Tech Stack (Planned)
+## Tech Stack
 - **Frontend:** React.js
-- **Backend:** Java, or Node.js
-- **Database:** MySQL or PostgreSQL
+- **Backend:** Java, or/and Node.js
+- **Database:** MySQL
 
 ## Future Plans
 - Build the interface and backend.
