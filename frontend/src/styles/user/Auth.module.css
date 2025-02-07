@@ -1,0 +1,213 @@
+/* Global Styles for Both Login and Register */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: var(--bs-light);
+  color: var(--bs-dark);
+}
+
+/* Center Align the Forms */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+/* Glassmorphism Effect for Forms */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 25px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Form Cards */
+.card {
+  border: none;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Card Title */
+.card-title {
+  font-size: 2rem;
+  color: var(--bs-primary);
+}
+
+/* Form Inputs and Controls */
+.form-control {
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid var(--bs-secondary);
+}
+
+.form-control:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 5px var(--bs-primary);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--bs-primary);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--bs-secondary);
+}
+
+/* Links */
+a {
+  color: var(--bs-link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Error Alerts */
+.alert {
+  margin-bottom: 20px;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Input Groups */
+.input-group {
+  margin-bottom: 1rem;
+}
+
+/* Submit Button */
+.btn-primary {
+  background-color: var(--bs-primary);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--bs-secondary);
+}
+
+/* Horizontal Layout (Registration Form) */
+.horizontal-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.register-image-section {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .horizontal-layout {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .register-image-section {
+    display: block;
+    margin-right: 30px;
+  }
+}
+
+/* Profile Picture Upload */
+#formProfilePic {
+  padding: 5px;
+}
+
+/* Spinner for Loading State */
+.spinner-border {
+  margin-right: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .register-image-section {
+    display: none;
+  }
+}
+
+/* Login Form Specific Styles */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-card {
+  border: none;
+  border-radius: 12px;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-size: 2rem;
+  color: var(--bs-primary);
+}
+
+/* Register Form Specific Styles */
+.auth-card {
+  border: none;
+  border-radius: 12px;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Input and Button Adjustments */
+input[type="file"] {
+  padding: 5px;
+  margin-bottom: 1.5rem;
+}
+
+input[type="date"],
+input[type="text"],
+input[type="email"],
+textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--bs-secondary);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Responsive Adjustments for Both Forms */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .register-image-section {
+    display: none;
+  }
+}
