@@ -1,0 +1,70 @@
+.userHome {
+  padding: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.homeTitle {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #2d3748;
+}
+
+.bookSection {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 15px;
+  padding: 0 20px;
+}
+
+.scrollContainer {
+  overflow-x: auto;
+  padding: 0 20px 15px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.booksRow {
+  display: inline-flex;
+  gap: 25px;
+  min-width: min-content;
+}
+
+.bookCardWrapper {
+  min-width: 220px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.bookCardWrapper:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .homeTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .booksRow {
+    gap: 15px;
+  }
+
+  .bookCardWrapper {
+    min-width: 180px;
+  }
+}
