@@ -1,0 +1,31 @@
+.reservation-form-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reservation-form-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .reservation-status {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .reservation-status span {
+    color: green;
+  }
+  
+  button[type="submit"] {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+  
