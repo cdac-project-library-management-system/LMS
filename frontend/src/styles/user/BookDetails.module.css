@@ -1,0 +1,107 @@
+/* src/styles/BookDetails2.module.css */
+.bookDetails {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  
+  .backButton {
+    background: none;
+    border: none;
+    color: #2c3e50;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0.5rem 1rem;
+    transition: background 0.2s;
+  }
+  
+  .backButton:hover {
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+  
+  .bookContent {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .bookImage {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .bookInfo {
+    flex: 1;
+  }
+  
+  .bookTitle {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+  }
+  
+  .bookAuthor {
+    font-size: 1.25rem;
+    margin: 0 0 1.5rem 0;
+    color: #666;
+  }
+  
+  .bookPages {
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+    color: #444;
+  }
+  
+  .bookDescription {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .statusButton,
+  .borrowButton {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .statusButton {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .borrowButton {
+    background: #3498db;
+    color: white;
+  }
+  
+  .statusButton:hover {
+    background: #e0e0e0;
+  }
+  
+  .borrowButton:hover {
+    background: #2980b9;
+  }
+  
+  @media (max-width: 768px) {
+    .bookContent {
+      flex-direction: column;
+    }
+  
+    .bookImage {
+      width: 100%;
+    }
+  }
