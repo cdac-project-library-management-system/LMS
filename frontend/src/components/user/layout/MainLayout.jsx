@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
             </Link>
           </Button>
           <Button variant="secondary" className="mb-3 w-100 text-start">
-            <Link to="/fines" style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}>
+            <Link to="/fine" style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}>
               Payment & Fines
             </Link>
           </Button>
@@ -60,7 +60,7 @@ const Layout = ({ children }) => {
             </Link>
           </Button>
           <Button variant="secondary" className="mb-3 w-100 text-start">
-            <Link to="/profile" style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}>
+            <Link to="/userProfile" style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}>
               User Profile
             </Link>
           </Button>
