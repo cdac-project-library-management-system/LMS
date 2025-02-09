@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { createUrl } from '../utils'
+import {createUrl}  from '../config'
 
 //template
 // export async function get....(){
@@ -137,11 +137,12 @@ export async function getAllBooks(){
           token,
         }
       })
-      response.data;
+      return response.data;
   }catch(ex){
       return {status: 'error', error:ex}
   }
 }
+
 
 //incomplete
 export async function getBooksByGenre(genreId){

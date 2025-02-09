@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserProfileCard from "../../../components/user/profile-management/profilecard";
 import Layout from "../../../components/user/layout/MainLayout";
-import { getMyProfile } from "../../../services/userService";
+import { getMyProfile } from "../../../services/user";
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
