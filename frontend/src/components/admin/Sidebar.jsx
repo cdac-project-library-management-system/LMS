@@ -46,9 +46,10 @@ const Sidebar = () => {
             {openSubMenu === "books" && (
               <ul className={styles.subMenu}>
                 <li><Link to="/books" className={styles.subMenuItem}>Books</Link></li>
-                <li><Link to="/add-book" className={styles.subMenuItem}>Add Book</Link></li>
-                <li><Link to="/edit-book" className={styles.subMenuItem}>Edit Book</Link></li>
-                <li><Link to="/book-details" className={styles.subMenuItem}>Book Details</Link></li>
+                <li><Link to="/admin/BookDetails" className={styles.subMenuItem}>Book Details</Link></li>
+                <li><Link to="/admin/AddBook" className={styles.subMenuItem}>Add Book</Link></li>
+               
+                
                 <li><Link to="/issue-book" className={styles.subMenuItem}>Issue Book</Link></li>
                 <li><Link to="/return-book" className={styles.subMenuItem}>Return Book</Link></li>
               </ul>
@@ -61,9 +62,8 @@ const Sidebar = () => {
             </div>
             {openSubMenu === "fines" && (
               <ul className={styles.subMenu}>
-                <li><Link to="/manage-fines" className={styles.subMenuItem}>Manage Fines</Link></li>
-                <li><Link to="/fine-details" className={styles.subMenuItem}>Fine Details</Link></li>
-                <li><Link to="/adjust-fine" className={styles.subMenuItem}>Adjust Fine</Link></li>
+                <li><Link to="/admin/Fines" className={styles.subMenuItem}>Manage Fines</Link></li>
+              
               </ul>
             )}
           </li>
@@ -74,9 +74,9 @@ const Sidebar = () => {
             </div>
             {openSubMenu === "members" && (
               <ul className={styles.subMenu}>
-                <li><Link to="/members" className={styles.subMenuItem}>Members</Link></li>
+                <li><Link to="/admin/UserDetails" className={styles.subMenuItem}>Members</Link></li>
                 
-                <li><Link to="/add-member" className={styles.subMenuItem}>Add Member</Link></li>
+                
               </ul>
             )}
           </li>
@@ -87,8 +87,8 @@ const Sidebar = () => {
             </div>
             {openSubMenu === "reservations" && (
               <ul className={styles.subMenu}>
-                <li><Link to="/manage-reservations" className={styles.subMenuItem}>Manage Reservations</Link></li>
-                <li><Link to="/approve-reservations" className={styles.subMenuItem}>Approve Reservations</Link></li>
+                <li><Link to="/admin/ManageReservations" className={styles.subMenuItem}>Manage Reservations</Link></li>
+                
               </ul>
             )}
           </li>
