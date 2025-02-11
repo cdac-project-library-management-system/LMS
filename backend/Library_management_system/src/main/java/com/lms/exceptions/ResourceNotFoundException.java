@@ -1,7 +1,6 @@
-package com.lms.exception;
+package com.lms.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
-
     public ResourceNotFoundException(String message) {
         super(message);
     }
