@@ -11,6 +11,9 @@ import UserDashboard from './pages/user/UserDashboard';
 import BookInfo from './pages/user/BookInfo';
 import BrowseCategoriesPage from './pages/user/BrowseCategoriesPage';
 import BookReviewPage from './pages/user/BookReviewPage';
+import UserProfile from './pages/user/profile-management/ProfilePage';
+import ChangePassword from './pages/user/profile-management/changepass';
+import FineManagement from './pages/user/payment/finepaymentcard';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
         <Route path="/borrowed-books" element={<BorrowedBooks />} />
         <Route path="/review-book" element={<BookReviewPage />} />
         <Route path="/book/:bookId" element={<BookInfo />} />
+        <Route path="/userProfile" element={< UserProfile/>} />
+        <Route path="/change-password" element={< ChangePassword/>} />
+        <Route path="/fine" element={< FineManagement/>} />
         <Route path="*" element={<Login />} /> {/* Default to login */}
       </Routes>
     </Router>

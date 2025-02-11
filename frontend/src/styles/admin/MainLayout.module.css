@@ -1,0 +1,25 @@
+/* Layout.module.css */
+
+/* General container styling */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa; /* Bootstrap's light gray background */
+  }
+  
+  /* Main content area styling */
+  .content {
+    background-color: #ffffff; /* White background for the content */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden;
+  }
+  
+  /* Footer styling */
+  .footer {
+    background-color: #343a40; /* Bootstrap's dark background */
+    color: #ffffff; /* White text for footer */
+    font-size: 0.9rem;
+  }
+  

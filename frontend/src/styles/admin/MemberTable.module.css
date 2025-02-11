@@ -1,0 +1,97 @@
+.membersContainer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+
+
+
+
+
+
+
+/* Table Container: Fixed height and scrollable */
+.table-responsive {
+    max-height: 500px; /* Adjust height as needed */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    border-radius: 8px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+/* Ensure the table fills the container */
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+/* Table header styling */
+.members-table th {
+    background: #1E3A8A;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+
+/* Action Buttons */
+.editButton, .deleteButton {
+    padding: 6px 15px;
+    border: none;
+    cursor: pointer;
+    margin: 2px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Edit Button */
+.editButton {
+    background-color: #ffc107;
+    color: black;
+    border: 1px solid #e0a800;
+}
+
+.editButton:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+}
+
+/* Delete Button */
+.deleteButton {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #c82333;
+}
+
+.deleteButton:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* Search Bar */
+.input-group-text {
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+}
+
+.input-group-text:hover {
+    background-color: #0056b3 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .members-table th, .members-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .editButton, .deleteButton {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+}
