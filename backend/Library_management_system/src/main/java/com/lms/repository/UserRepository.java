@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.lms.repositories;
 
 import com.lms.entities.User;
@@ -17,3 +18,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);  // 🔹 Check if email already exists
 
 }
+=======
+package com.lms.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.lms.entities.User;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    
+    // Find user by email (used for authentication)
+    Optional<User> findByEmail(String email);
+
+    // Check if a user exists by email
+    boolean existsByEmail(String email);
+    
+}
+
+>>>>>>> 2a53403 (feat: Add UserRespository for user interation with database)
