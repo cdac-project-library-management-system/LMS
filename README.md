@@ -19,7 +19,7 @@ A web-based application designed for public libraries to manage books, members, 
 
 ## Tech Stack
 - **Frontend:** React.js
-- **Backend:** Java, or/and Node.js
+- **Backend:** Java
 - **Database:** MySQL
 
 ## Future Plans
