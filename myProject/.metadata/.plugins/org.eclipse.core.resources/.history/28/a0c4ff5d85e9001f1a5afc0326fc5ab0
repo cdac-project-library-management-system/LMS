@@ -1,0 +1,22 @@
+package com.lms.service.impl;
+
+import com.lms.dto.PaginatedResponseDTO;
+import com.lms.dto.request.AdminLogRequestDTO;
+import com.lms.dto.response.AdminLogResponseDTO;
+import com.lms.service.AdminLogService;
+
+public class AdminLogServiceImpl implements AdminLogService {
+
+	@Override
+	public AdminLogResponseDTO createAdminLog(AdminLogRequestDTO dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PaginatedResponseDTO<AdminLogResponseDTO> getAdminLogsByAdmin(Long adminId, int page, int size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

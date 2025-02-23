@@ -1,0 +1,72 @@
+package com.lms.service.impl;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.lms.dto.PaginatedResponseDTO;
+import com.lms.dto.request.FineRequestDTO;
+import com.lms.dto.response.FineResponseDTO;
+import com.lms.service.FineService;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class FineServiceImpl implements FineService {
+
+    private final FineRepository fineRepository;
+    private final BorrowRecordRepository borrowRecordRepository;
+    private final ModelMapper modelMapper;
+
+    @Override
+    @Transactional
+    public FineResponseDto createFine(FineRequestDto dto) {
+        Fine fine = modelMapper.map(dto, Fine.class);
+        fine.setBorrowRecord(borrowRecordRepository.findById(dto.getBorrowRecordId())
+                .orElseThrow(() -> new RuntimeException("Borrow record not found")));
+        fine = fineRepository.save(fine);
+        return modelMapper.map(fine, FineResponseDto.class);
+    }
+
+    @Override
+    @Transactional
+    public FineResponseDto updateFine(Long fineId, FineRequestDto dto) {
+        Fine fine = fineRepository.findById(fineId)
+                .orElseThrow(() -> new RuntimeException("Fine not found"));
+        fine.setDaysOverdue(dto.getDaysOverdue());
+        fine.setFineAmount(dto.getFineAmount());
+        fine.setStatus(dto.getStatus());
+        fine = fineRepository.save(fine);
+        return modelMapper.map(fine, FineResponseDto.class);
+    }
+
+    @Override
+    public FineResponseDto getFineById(Long fineId) {
+        Fine fine = fineRepository.findById(fineId)
+                .orElseThrow(() -> new RuntimeException("Fine not found"));
+        return modelMapper.map(fine, FineResponseDto.class);
+    }
+
+    @Override
+    public FineResponseDto getFineByBorrowRecord(Long borrowRecordId) {
+        Fine fine = fineRepository.findByBorrowRecordId(borrowRecordId)
+                .orElseThrow(() -> new RuntimeException("Fine not found for this borrow record"));
+        return modelMapper.map(fine, FineResponseDto.class);
+    }
+
+    @Override
+    public PaginatedResponseDto<FineResponseDto> getAllFines(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Fine> pageResult = fineRepository.findAll(pageable);
+        List<FineResponseDto> dtos = pageResult.getContent()
+                .stream()
+                .map(fine -> modelMapper.map(fine, FineResponseDto.class))
+                .collect(Collectors.toList());
+        PaginatedResponseDto<FineResponseDto> response = new PaginatedResponseDto<>();
+        response.setItems(dtos);
+        response.setCurrentPage(pageResult.getNumber());
+        response.setPageSize(pageResult.getSize());
+        response.setTotalItems(pageResult.getTotalElements());
+        response.setTotalPages(pageResult.getTotalPages());
+        return response;
+    }
+}

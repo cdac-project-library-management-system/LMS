@@ -1,0 +1,11 @@
+package com.lms.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.lms.entities.AdminLog;
+
+public interface AdminLogRepository extends JpaRepository<AdminLog, Long> {
+	
+	List<AdminLog> findByAdminId(Long adminId);
+
+}
