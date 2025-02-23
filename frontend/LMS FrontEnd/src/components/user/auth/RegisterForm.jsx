@@ -1,0 +1,172 @@
+import React, { useState } from 'react';
+import { Form, Button, Card, Alert, Spinner, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
+import AuthService from '../../../services/AuthService'; // Import Axios service
+import '../../../styles/user/Auth.module.css';
+
+const RegisterForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [profilePicUrl, setProfilePicUrl] = useState(''); // Store URL, not file
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate(); // Use navigate for redirection after registration
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    // Prepare JSON object (no FormData)
+    const userData = {
+      email,
+      password,
+      fullName: name,
+      phoneNumber: phone,
+      address,
+      profilePicUrl, // Backend expects URL, handle image upload separately
+      role: "USER", // Default role, update if needed
+      status: true  // Set default status as true
+    };
+
+    try {
+      await AuthService.register(userData);
+      alert('Registration Successful! Redirecting to Login...');
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Container fluid className="auth-container d-flex align-items-center justify-content-center">
+      <Row className="justify-content-center w-100 mt-5 mb-5">
+        <Col md={6} xs={12} className="d-flex justify-content-center">
+          <Card className="auth-card w-100 p-4 shadow-lg rounded">
+            <Card.Body>
+              <h2 className="text-center card-title">Sign Up</h2>
+              <p className="text-center text-muted mb-4">Create your account to get started</p>
+              {error && <Alert variant="danger">{error}</Alert>}
+
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formName" className="mb-3">
+                  <Form.Label>Full Name</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    placeholder="Enter your full name" 
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} 
+                    required 
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formEmail" className="mb-3">
+                  <Form.Label>Email Address</Form.Label>
+                  <Form.Control 
+                    type="email" 
+                    placeholder="Enter email" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    required 
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formPhone" className="mb-3">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    placeholder="Enter phone number" 
+                    value={phone} 
+                    onChange={(e) => setPhone(e.target.value)} 
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formAddress" className="mb-3">
+                  <Form.Label>Address</Form.Label>
+                  <Form.Control 
+                    as="textarea" 
+                    rows={3} 
+                    placeholder="Enter your address" 
+                    value={address} 
+                    onChange={(e) => setAddress(e.target.value)} 
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formProfilePicUrl" className="mb-3">
+                  <Form.Label>Profile Picture URL</Form.Label>
+                  <Form.Control 
+                    type="text" 
+                    placeholder="Enter image URL" 
+                    value={profilePicUrl} 
+                    onChange={(e) => setProfilePicUrl(e.target.value)} 
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formPassword" className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <InputGroup>
+                    <Form.Control 
+                      type={showPassword ? 'text' : 'password'} 
+                      placeholder="Enter password" 
+                      value={password} 
+                      onChange={(e) => setPassword(e.target.value)} 
+                      required
+                    />
+                    <Button variant="outline-secondary" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </InputGroup>
+                </Form.Group>
+
+                <Form.Group controlId="formConfirmPassword" className="mb-3">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <InputGroup>
+                    <Form.Control 
+                      type={showConfirmPassword ? 'text' : 'password'} 
+                      placeholder="Re-enter password" 
+                      value={confirmPassword} 
+                      onChange={(e) => setConfirmPassword(e.target.value)} 
+                      required 
+                    />
+                    <Button variant="outline-secondary" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </InputGroup>
+                </Form.Group>
+
+                <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+                  {loading ? <Spinner animation="border" size="sm" /> : 'Register'}
+                </Button>
+              </Form>
+
+              <div className="text-center mt-3">
+                <span>Already have an account? </span>
+                <Link to="/login" className="text-primary">Login here</Link>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+export default RegisterForm;
