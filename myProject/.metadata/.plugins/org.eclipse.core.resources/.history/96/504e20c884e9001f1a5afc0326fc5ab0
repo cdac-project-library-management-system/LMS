@@ -1,0 +1,40 @@
+package com.lms.service.impl;
+
+import com.lms.dto.PaginatedResponseDTO;
+import com.lms.dto.request.FineRequestDTO;
+import com.lms.dto.response.FineResponseDTO;
+import com.lms.service.FineService;
+
+public class FineServiceImpl implements FineService {
+
+	@Override
+	public FineResponseDTO createFine(FineRequestDTO dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FineResponseDTO updateFine(Long fineId, FineRequestDTO dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FineResponseDTO getFineById(Long fineId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FineResponseDTO getFineByBorrowRecord(Long borrowRecordId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PaginatedResponseDTO<FineResponseDTO> getAllFines(int page, int size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

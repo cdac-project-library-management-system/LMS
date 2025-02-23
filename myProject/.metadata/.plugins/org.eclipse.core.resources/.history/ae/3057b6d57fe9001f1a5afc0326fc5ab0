@@ -1,0 +1,11 @@
+package com.lms.service;
+
+import com.lms.dto.PaginatedResponseDTO;
+
+public interface AdminLogService {
+	
+    AdminLogResponseDto createAdminLog(AdminLogRequestDto dto);
+    
+    PaginatedResponseDTO<AdminLogResponseDto> getAdminLogsByAdmin(Long adminId, int page, int size);
+
+}

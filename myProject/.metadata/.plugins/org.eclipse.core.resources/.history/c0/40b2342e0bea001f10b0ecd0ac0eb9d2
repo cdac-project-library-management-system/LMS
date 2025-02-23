@@ -1,0 +1,5 @@
+package com.lms.exceptions;
+
+public class ApiResponseException extends RuntimeException {
+
+}

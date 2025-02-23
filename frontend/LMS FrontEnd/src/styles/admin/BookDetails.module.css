@@ -1,0 +1,22 @@
+/* Main Content: Push content to the right to avoid overlap */
+.membersContent {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-x: auto;
+    width:100%;
+}
+
+/* Table container */
+.membersTableContainer {
+    /* padding: 20px; */
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Title Styling */
+.membersTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}

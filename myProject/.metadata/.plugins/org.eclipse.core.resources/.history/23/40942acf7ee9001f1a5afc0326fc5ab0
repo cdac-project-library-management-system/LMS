@@ -1,0 +1,9 @@
+package com.lms.service;
+
+public interface FineService {
+    FineResponseDto createFine(FineRequestDto dto);
+    FineResponseDto updateFine(Long fineId, FineRequestDto dto);
+    FineResponseDto getFineById(Long fineId);
+    FineResponseDto getFineByBorrowRecord(Long borrowRecordId);
+    PaginatedResponseDto<FineResponseDto> getAllFines(int page, int size);
+}

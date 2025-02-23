@@ -1,0 +1,19 @@
+package com.lms.dto.request;
+
+import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BorrowRecordRequestDTO {
+    private Long userId;
+    private Long bookId;
+    private LocalDateTime borrowDate;
+    private LocalDateTime dueDate;
+    // Optionally, you can set the initial status (e.g., BORROWED)
+    private BorrowStatus status;
+}

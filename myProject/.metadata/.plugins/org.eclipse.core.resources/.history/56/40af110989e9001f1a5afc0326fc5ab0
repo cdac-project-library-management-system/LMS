@@ -1,0 +1,76 @@
+package com.lms.security;
+
+import java.security.Key;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
+@Component
+@Slf4j
+public class JwtUtil {
+
+	@Value("${spring.security.jwt.secret.key}")
+	private String jwtSecret;
+
+	@Value("${spring.security.jwt.exp.time}")
+	private int jwtExpirationMs;
+	
+	private Key key;
+
+	@PostConstruct
+	public void init() {
+		key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+	}
+
+	public String generateJwtToken(Authentication authentication) {
+		log.info("generate jwt token " + authentication);//contains verified user details
+		CustomUserDetailsImpl userPrincipal = (CustomUserDetailsImpl) authentication.getPrincipal();
+//JWT : userName,issued at ,exp date,digital signature(does not typically contain password , can contain authorities
+		return Jwts.builder() // JWTs : a Factory class , used to create JWT tokens
+				.setSubject((userPrincipal.getUsername())) // setting subject part of the token(typically user
+															// name/email)
+				.setIssuedAt(new Date())// Sets the JWT Claims iat (issued at) value of current date
+				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))// Sets the JWT Claims exp
+																					// (expiration) value.
+				// setting a custom claim , to add granted authorities
+				.claim("authorities", getAuthoritiesInString(userPrincipal.getAuthorities()))
+				// setting a custom claim , to add user id (remove it if not required in the project)
+				.claim("user_id",userPrincipal.getUserEntity().getId())
+		
+				.signWith(key, SignatureAlgorithm.HS512) // Signs the constructed JWT using the specified
+															// algorithm with the specified key, producing a
+															// JWS(Json web signature=signed JWT)
+
+				// Using token signing algo : HMAC using SHA-512
+				.compact();// Actually builds the JWT and serializes it to a compact, URL-safe string
+	}
+
+    public String extractUsername(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateJwtToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return true;
+        } catch (SignatureException | MalformedJwtException |
+                 ExpiredJwtException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
+            // Log exception as needed
+        }
+        return false;
+    }
+}

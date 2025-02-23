@@ -1,0 +1,54 @@
+package com.lms.controller;
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserService userService; // Used for registration
+    private final ModelMapper modelMapper;
+
+    /**
+     * Endpoint to authenticate the user and generate a JWT.
+     *
+     * @param loginRequest the login request containing email and password
+     * @return the JWT token along with basic user info
+     */
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+        // Perform authentication
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Generate JWT using the principal (UserDetails)
+        String token = jwtUtil.generateToken(authentication.getPrincipal());
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setToken(token);
+        response.setEmail(loginRequest.getEmail());
+        // Optionally, include user roles or id if desired
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Endpoint to register a new user.
+     *
+     * @param registerRequest the registration request containing user details
+     * @return a response with basic user info and a success message
+     */
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO registerRequest) {
+        // Map registration DTO to UserRequestDTO (if they differ)
+        UserRequestDTO userRequest = modelMapper.map(registerRequest, UserRequestDTO.class);
+        // Create the user
+        UserResponseDTO userResponse = userService.createUser(userRequest);
+        RegisterResponseDTO response = new RegisterResponseDTO();
+        response.setUserId(userResponse.getId());
+        response.setEmail(userResponse.getEmail());
+        response.setMessage("Registration successful");
+        return ResponseEntity.ok(response);
+    }
+
+}

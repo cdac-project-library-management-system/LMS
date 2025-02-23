@@ -1,0 +1,9 @@
+package com.lms.service;
+
+public interface CategoryService {
+    CategoryResponseDto createCategory(CategoryRequestDto dto);
+    CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto dto);
+    CategoryResponseDto getCategoryById(Long categoryId);
+    PaginatedResponseDto<CategoryResponseDto> getAllCategories(int page, int size);
+    void deleteCategory(Long categoryId);
+}

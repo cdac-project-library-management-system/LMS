@@ -1,0 +1,5 @@
+package com.lms.entities;
+
+public class BorrowRecord extends BaseEntity {
+
+}

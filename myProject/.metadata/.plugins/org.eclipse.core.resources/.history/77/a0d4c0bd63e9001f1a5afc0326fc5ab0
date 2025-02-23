@@ -1,0 +1,5 @@
+package com.lms.entities.enums;
+
+public enum BorrowStatus {
+
+}

@@ -1,0 +1,12 @@
+spring.application.name=library-management-system
+
+server.port=8080
+server.servlet.session.persistent=false
+
+# Database properties
+spring.datasource.url=jdbc:mysql://localhost:3306/lib_system?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+spring.datasource.username=D1_87055_Shreyas
+spring.datasource.password=manager
+
+spring.security.jwt.secret.key=aHplNGNQTS94TmZybUlDdGFXZktWUlBxVHRBelo5cHJONXZyZWJCbVUxRHFDZ3dtNllzbWxja0hqeUVPMzEvaWQ4ajBMVTlUYnNVcWl0bXZpNnlnb0tONWwwUkxBV0xwdjJXelBVTFZvbjlYRnhKaUdaOVN3MXBXTGhJSmNpU3BUSFlWbWp6eTVlVy9aTmhBcSs2M3FzL01vNFVFbys4cUlqOEZZZlVGWXVVPQ==
+spring.security.jwt.exp.time=86400000
