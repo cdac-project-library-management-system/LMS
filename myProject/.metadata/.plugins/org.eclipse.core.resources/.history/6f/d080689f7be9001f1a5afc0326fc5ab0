@@ -1,9 +1,0 @@
-package com.lms.service;
-
-public interface BookService {
-    BookResponseDto createBook(BookRequestDto bookRequestDto);
-    BookResponseDto updateBook(Long bookId, BookRequestDto bookRequestDto);
-    BookResponseDto getBookById(Long bookId);
-    PaginatedResponseDto<BookResponseDto> getAllBooks(int page, int size);
-    void deleteBook(Long bookId);
-}

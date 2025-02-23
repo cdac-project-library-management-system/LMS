@@ -1,5 +1,0 @@
-package com.lms.dto.request;
-
-public class FineRequestDTO {
-
-}

@@ -1,4 +1,0 @@
-spring.application.name=library-management-system
-
-spring.security.jwt.secret.key=
-spring.security.jwt.exp.time=86400000

@@ -1,9 +1,0 @@
-package com.lms.service;
-
-public interface ReviewService {
-    ReviewResponseDto createReview(ReviewRequestDto dto);
-    ReviewResponseDto updateReview(Long reviewId, ReviewRequestDto dto);
-    ReviewResponseDto getReviewById(Long reviewId);
-    PaginatedResponseDto<ReviewResponseDto> getReviewsByBook(Long bookId, int page, int size);
-    PaginatedResponseDto<ReviewResponseDto> getReviewsByUser(Long userId, int page, int size);
-}
