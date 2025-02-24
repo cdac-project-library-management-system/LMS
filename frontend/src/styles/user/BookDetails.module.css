@@ -1,8 +1,27 @@
 /* src/styles/BookDetails2.module.css */
-.bookDetails {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 1rem;
+  .bookDetails {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+  }
+  
+  .borrowButton {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .borrowButton:disabled {
+    background-color: #ccc; /* Grey out when disabled */
+    cursor: not-allowed;
+  }
+  
+  .fadeOut {
+    opacity: 0.5;
+    transition: opacity 0.5s ease-in-out;
   }
   
   .backButton {

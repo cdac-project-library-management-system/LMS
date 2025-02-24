@@ -14,6 +14,7 @@ const BookDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isBorrowed, setIsBorrowed] = useState(false); // Track if book is borrowed
+  const [buttonFade, setButtonFade] = useState(false); // Button fade effect
   const userId = getUserInfo().userId;
 
   useEffect(() => {
@@ -33,18 +34,24 @@ const BookDetails = () => {
   }, [bookId]);
 
   const handleBorrow = async () => {
+    if (isBorrowed) return; // Prevent duplicate borrowing
+
+    setButtonFade(true); // Start fade effect
+
     try {
-      await ReservationService.createReservation(
-        {
-          bookId:bookId,
-          userId:userId,
-          reservationDate: new Date(),
-          status: "PENDING",
-        }); // Send borrow request to backend
+      await ReservationService.createReservation({
+        bookId: bookId,
+        userId: userId,
+        reservationDate: new Date(),
+        status: "PENDING",
+      });
+      console.log("success");
       toast.success("Borrow request sent successfully!"); // Success toast
-      setIsBorrowed(true); // Disable borrow button
+      setIsBorrowed(true); // Mark as borrowed
     } catch (err) {
       toast.error("Failed to send borrow request."); // Error toast
+    } finally {
+      setTimeout(() => setButtonFade(false), 1000); // Restore button state after fade
     }
   };
 
@@ -59,7 +66,11 @@ const BookDetails = () => {
       </button>
 
       <div className={styles.bookContent}>
-        <img src={book.coverImageUrl || "https://via.placeholder.com/150"} alt={book.title} className={styles.bookImage} />
+        <img
+          src={book.coverImageUrl || "https://via.placeholder.com/150"}
+          alt={book.title}
+          className={styles.bookImage}
+        />
 
         <div className={styles.bookInfo}>
           <h2 className={styles.bookTitle}>{book.title}</h2>
@@ -72,12 +83,12 @@ const BookDetails = () => {
           </p>
 
           <div className={styles.buttonGroup}>
-            <button 
-              className={styles.borrowButton} 
-              onClick={handleBorrow} 
+            <button
+              className={`${styles.borrowButton} ${buttonFade ? styles.fadeOut : ""}`} // Add fade effect
+              onClick={handleBorrow}
               disabled={isBorrowed} // Disable if already borrowed
             >
-              {isBorrowed ? "Borrowed ✅" : "Borrow"}
+              {isBorrowed ? "Borrowed" : "Borrow"}
             </button>
           </div>
         </div>

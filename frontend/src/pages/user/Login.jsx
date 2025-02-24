@@ -17,7 +17,7 @@ const Login = () => {
       if (object.role === 'ROLE_ADMIN') {
         navigate('/admin/Dashboard'); // Redirect admin
       } else if (object.role === 'ROLE_USER') {
-        navigate('/'); // Redirect normal user
+        navigate('/home'); // Redirect normal user
       } else {
         setError('Invalid role detected.'); // Handle unknown roles
       }
