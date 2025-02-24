@@ -23,7 +23,7 @@ const BooksDetails = () => {
     try {
       const response = await BookService.getAllBooks();
       
-      // console.log("Full Response Object:", response);  
+      console.log("Full Response Object:", response);  
       // Safe check before accessing "items"
       if (response) {
         setBooks(response); // Correctly extract books from "items"
@@ -115,8 +115,10 @@ const BooksDetails = () => {
                   <thead className="table-dark">
                     <tr>
                       <th>Title</th>
+                      <th>ISBN</th>
                       <th>Author</th>
-                      <th>Category</th>
+                      <th>Category ID</th>
+                      <th>Description</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -125,8 +127,10 @@ const BooksDetails = () => {
                       filteredBooks.map((book) => (
                         <tr key={book.id}>
                           <td>{book.title}</td>
+                          <td>{book.isbn}</td>
                           <td>{book.author}</td>
-                          <td>{book.category}</td>
+                          <td>{book.categoryId}</td>
+                          <td>{book.description}</td>
                           <td>
                             <button className="btn btn-warning me-4 p-2 px-3" onClick={() => handleEdit(book.id)}>
                               Edit

@@ -54,7 +54,7 @@ function App() {
         <Route path="/" element={<UserDashboard/>}/>
 
         <Route path="/fine" element={< FineManagement/>} />
-        <Route path="*" element={<Login />} /> {/* Default to home */}
+        <Route path="/*" element={<Login />} /> {/* Default to Login */}
      
        
        <Route path="/admin/UserDetails" element={<MemberDetailsPage/>}/>

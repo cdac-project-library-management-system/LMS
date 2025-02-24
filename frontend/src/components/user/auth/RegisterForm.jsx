@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Card, Alert, Spinner, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import AuthService from '../../../services/AuthService'; // Import Axios service
-import '../../../styles/user/Auth.module.css';
+import AuthService from '../../../services/AuthService';
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
@@ -12,43 +11,39 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [profilePicUrl, setProfilePicUrl] = useState(''); // Store URL, not file
+  const [profilePicUrl, setProfilePicUrl] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // Use navigate for redirection after registration
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError('');
-    setLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
+      setError('Passwords do not match.');
       return;
     }
 
-    // Prepare JSON object (no FormData)
-    const userData = {
-      email,
-      password,
-      fullName: name,
-      phoneNumber: phone,
-      address,
-      profilePicUrl, // Backend expects URL, handle image upload separately
-      role: "USER", // Default role, update if needed
-      status: true  // Set default status as true
+    const userData = { 
+      fullName: name,  // Ensure it matches backend DTO field 
+      email:email, 
+      password:password, 
+      phoneNumber: phone, 
+      address:address, 
+      profilePicUrl 
     };
+    
+    setLoading(true);
 
     try {
       await AuthService.register(userData);
-      alert('Registration Successful! Redirecting to Login...');
-      navigate('/login');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      navigate('/login'); // Redirect to login after successful registration
+    } catch (error) {
+      setError(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

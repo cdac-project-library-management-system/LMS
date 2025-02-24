@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../../services/AuthService';
 import LoginForm from '../../components/user/auth/LoginForm';
+import { getUserInfo } from '../../services/api';
 
 const Login = () => {
   const [error, setError] = useState('');
@@ -10,11 +11,12 @@ const Login = () => {
   const handleLogin = async (email, password) => {
     setError('');
     try {
-      const role = await AuthService.login(email, password); // Get role after login
-  
-      if (role === 'ROLE_ADMIN') {
+      await AuthService.login(email, password); // Get role after login
+      const object = getUserInfo(); 
+      // console.log(role); // for debugging
+      if (object.role === 'ROLE_ADMIN') {
         navigate('/admin/Dashboard'); // Redirect admin
-      } else if (role === 'ROLE_USER') {
+      } else if (object.role === 'ROLE_USER') {
         navigate('/'); // Redirect normal user
       } else {
         setError('Invalid role detected.'); // Handle unknown roles

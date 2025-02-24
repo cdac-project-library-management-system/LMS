@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createUrl, getAuthHeaders } from "../config"; // Import config to generate URLs and headers
-import {jwtDecode} from "jwt-decode"; // Install with: npm install jwt-decode
+import { jwtDecode } from "jwt-decode"; // Install with: npm install jwt-decode
 
 const getAllBooks = async () => {
   try {
@@ -16,12 +16,9 @@ const getAllBooks = async () => {
 // Add book method
 const addBook = async (bookData) => {
   try {
-    console.log(getAuthHeaders())
+    console.log(getAuthHeaders());
     const response = await axios.post(createUrl("books"), bookData, {
-      headers: {
-        ...getAuthHeaders()
-        // "Content-Type": "multipart/form-data", // Ensure to handle file upload
-      },
+      headers: { ...getAuthHeaders() },
     });
 
     return response.data; // Assuming response data contains the newly added book or success status
@@ -54,13 +51,13 @@ const updateBook = async (bookId, updatedData) => {
 };
 
 const deleteBook = async (bookId) => {
-  try{
-    const response = await axios.delete(createUrl(`books/${bookId}`),{
+  try {
+    const response = await axios.delete(createUrl(`books/${bookId}`), {
       headers: getAuthHeaders(),
-    })
+    });
     return response.data;
-  }catch(error){
-    throw new Error("Failed to delete book")
+  } catch (error) {
+    throw new Error("Failed to delete book");
   }
 };
 
@@ -86,11 +83,13 @@ const borrowBook = async (bookId) => {
   }
 };
 
-export default {
+const BookService = {
   getAllBooks,
   addBook,
   getBookById,
   borrowBook,
   updateBook,
-  deleteBook
+  deleteBook,
 };
+
+export default BookService;

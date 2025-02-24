@@ -15,6 +15,7 @@ public class BookResponseDTO {
     private String isbn;
     private String description;
     private Integer copiesAvailable;
+    private String author;
     private String coverImageUrl;
     private Long categoryId;
     private String categoryName;

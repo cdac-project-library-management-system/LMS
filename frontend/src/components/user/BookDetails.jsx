@@ -4,6 +4,8 @@ import { toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
 import styles from "../../styles/user/BookDetails.module.css";
 import BookService from "../../services/BookService";
+import ReservationService from "../../services/ReservationService";
+import { getUserInfo } from "../../services/api";
 
 const BookDetails = () => {
   const { bookId } = useParams();
@@ -11,12 +13,15 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isBorrowed, setIsBorrowed] = useState(false); // Track if book is borrowed
+  const userId = getUserInfo().userId;
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
         const data = await BookService.getBookById(bookId);
         setBook(data);
+        setIsBorrowed(data.isBorrowed || false); // Check if already borrowed
       } catch (err) {
         setError("Failed to load book details.");
       } finally {
@@ -29,8 +34,15 @@ const BookDetails = () => {
 
   const handleBorrow = async () => {
     try {
-      await BookService.borrowBook(bookId);
+      await ReservationService.createReservation(
+        {
+          bookId:bookId,
+          userId:userId,
+          reservationDate: new Date(),
+          status: "PENDING",
+        }); // Send borrow request to backend
       toast.success("Borrow request sent successfully!"); // Success toast
+      setIsBorrowed(true); // Disable borrow button
     } catch (err) {
       toast.error("Failed to send borrow request."); // Error toast
     }
@@ -47,7 +59,7 @@ const BookDetails = () => {
       </button>
 
       <div className={styles.bookContent}>
-        <img src={book.image || "https://via.placeholder.com/150"} alt={book.title} className={styles.bookImage} />
+        <img src={book.coverImageUrl || "https://via.placeholder.com/150"} alt={book.title} className={styles.bookImage} />
 
         <div className={styles.bookInfo}>
           <h2 className={styles.bookTitle}>{book.title}</h2>
@@ -60,8 +72,12 @@ const BookDetails = () => {
           </p>
 
           <div className={styles.buttonGroup}>
-            <button className={styles.borrowButton} onClick={handleBorrow}>
-              Borrow
+            <button 
+              className={styles.borrowButton} 
+              onClick={handleBorrow} 
+              disabled={isBorrowed} // Disable if already borrowed
+            >
+              {isBorrowed ? "Borrowed ✅" : "Borrow"}
             </button>
           </div>
         </div>
