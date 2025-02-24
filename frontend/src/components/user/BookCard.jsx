@@ -5,8 +5,6 @@ import styles from "../../styles/user/BookCard.module.css";
 import defaultBookCover from '../../assets/book-cover-blue-book-cover.jpg'; // Import default image
 
 const BookCard = ({ book }) => {
-  console.log("Book Data:", book);
-  console.log("Cover Image URL:", book.coverImageUrl);
 
   return (
     <div className="align-content-center">

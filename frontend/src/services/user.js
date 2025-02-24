@@ -82,21 +82,24 @@ try {
 }
 
 export async function getMyProfile() {
-    try {
-      const url = createUrl('users/')
+  try {
       const user = getUserInfo();
-      const id = user.userId;
-      // const token = sessionStorage['token']
+      if (!user || !user.userId) {
+          throw new Error("User ID not found in token.");
+      }
+
+      const url = createUrl(`users/${user.userId}`); // Pass userId in URL
       const response = await axios.get(url, {
-        headers: {
-          id
-        },
-      })
-      return response.data
-    } catch (ex) {
-      return { status: 'error', error: ex }
-    }
+          headers: getAuthHeaders(), // Ensure authentication headers are included
+      });
+
+      return response.data;
+  } catch (ex) {
+      console.error("Error fetching profile:", ex);
+      return { status: "error", error: ex.message };
+  }
 }
+
 
 export async function editMyProfile(firstName, lastName, phone, email, address, enrollment ) {
     try {

@@ -26,7 +26,7 @@ import ChangePassword from './pages/user/profile-management/changepass';
 import FineManagement from './pages/user/payment/finepaymentcard';
 import LogoutPage from './pages/user/logout';
 import AddCategory from './pages/admin/AddCategory'
-import { ToastContainer } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 
 
 import Dashboard from './pages/admin/DashboardPage';
@@ -40,7 +40,7 @@ function App() {
     <ToastContainer position="top-right" autoClose={3000} />
     <Router>
       <Routes>
-      <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/browse-categories" element={<BrowseCategoriesPage />} />
@@ -51,7 +51,7 @@ function App() {
         <Route path="/change-password" element={< ChangePassword />} />
         <Route path="/userProfile" element={<UserProfile />} /> 
         <Route path="/logout" element={<LogoutPage/>} />
-        <Route path="/" element={<UserDashboard/>}/>
+        <Route path="/home" element={<UserDashboard/>}/>
 
         <Route path="/fine" element={< FineManagement/>} />
         <Route path="/*" element={<Login />} /> {/* Default to Login */}

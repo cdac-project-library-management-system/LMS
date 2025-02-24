@@ -4,22 +4,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Search } from "lucide-react";
 import ReservationService from "../../services/ReservationService";
 import BookService from "../../services/BookService";
-import {getUserById} from "../../services/user";
+import BorrowService from "../../services/BorrowService";
+import { getUserById } from "../../services/user";
 
 const Reservation = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [reservations, setReservations] = useState([]);
+  const [page, setPage] = useState(0); // Track current page
+  const [totalPages, setTotalPages] = useState(1); // Track total pages
 
   useEffect(() => {
     fetchReservations();
   }, []);
 
-  const fetchReservations = async () => {
+  const fetchReservations = async (currentPage = 0) => {
     try {
-      const response = await ReservationService.getAllReservations();
-      const reservationsList = response.items || [];
+      const response = await ReservationService.getAllReservations(currentPage, 10); // Fetch paginated data
+      let reservationsList = response.items || [];
+      console.log(response);
+      
+      setTotalPages(response.totalPages || 1); // Store total pages
   
-      // Fetch book and user details for each reservation
       const updatedReservations = await Promise.all(
         reservationsList.map(async (reservation) => {
           let bookTitle = "Unknown Book";
@@ -51,6 +56,9 @@ const Reservation = () => {
         })
       );
   
+      // Sort reservations by latest date first
+      updatedReservations.sort((a, b) => new Date(b.reservationDate) - new Date(a.reservationDate));
+  
       setReservations(updatedReservations);
     } catch (error) {
       console.error("Error fetching reservations:", error);
@@ -58,19 +66,37 @@ const Reservation = () => {
   };
   
 
-  const handleApprove = async (id) => {
+  const handleApprove = async (id, userId, bookId) => {
     try {
       await ReservationService.updateReservation(id, { status: "COMPLETED" });
+  
+      const borrowDate = new Date().toISOString(); // Convert to ISO format
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 30); // Add 30 days
+      const dueDateISO = dueDate.toISOString(); // Convert to ISO format
+      const status = "BORROWED";
+  
+      // Call Borrow Service to create a borrow record
+      await BorrowService.createBorrowRecord({
+        userId,
+        bookId,
+        borrowDate,
+        dueDate: dueDateISO, // Use formatted date
+        status,
+      });
+  
       setReservations((prev) =>
         prev.map((reservation) =>
           reservation.id === id ? { ...reservation, status: "COMPLETED" } : reservation
         )
       );
-      Swal.fire("Approved!", "Reservation has been approved.", "success");
+      Swal.fire("Approved!", "Reservation has been approved and borrow record created.", "success");
     } catch (error) {
       console.error("Error approving reservation:", error);
+      Swal.fire("Error", "Failed to approve reservation.", "error");
     }
   };
+  
 
   const handleCancel = async (id) => {
     try {
@@ -115,12 +141,13 @@ const Reservation = () => {
             </div>
 
             <div className="table-responsive">
+            </div>
               <table className="table table-bordered table-hover">
                 <thead className="table-dark">
                   <tr>
                     <th>User ID</th>
                     <th>User Name</th>
-                    <th>Book Title</th> 
+                    <th>Book Title</th>
                     <th>Reservation Date</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -130,8 +157,8 @@ const Reservation = () => {
                   {filteredReservations.map((reservation) => (
                     <tr key={reservation.id}>
                       <td>{reservation.userId}</td>
-                      <td>{reservation.userName}</td> {/* Display User Name */}
-                      <td>{reservation.bookTitle}</td> {/* Display Book Title */}
+                      <td>{reservation.userName}</td>
+                      <td>{reservation.bookTitle}</td>
                       <td>{reservation.reservationDate}</td>
                       <td>
                         <span
@@ -151,7 +178,7 @@ const Reservation = () => {
                           <>
                             <button
                               className="btn btn-success me-2"
-                              onClick={() => handleApprove(reservation.id)}
+                              onClick={() => handleApprove(reservation.id, reservation.userId, reservation.bookId)}
                             >
                               Approve
                             </button>
@@ -169,6 +196,24 @@ const Reservation = () => {
                 </tbody>
               </table>
             </div>
+            <div className="d-flex justify-content-between mt-3">
+              <button
+                className="btn btn-secondary"
+                disabled={page === 0}
+                onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+              >
+                Previous
+              </button>
+
+              <span className="align-self-center">Page {page + 1} of {totalPages}</span>
+
+              <button
+                className="btn btn-secondary"
+                disabled={page >= totalPages - 1}
+                onClick={() => setPage((prev) => prev + 1)}
+              >
+                Next
+              </button>
           </div>
         </div>
       </div>
