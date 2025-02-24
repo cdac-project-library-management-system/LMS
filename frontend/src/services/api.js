@@ -7,9 +7,10 @@ export function getUserInfo() {
     if (!token) return null;
 
     const decoded = jwtDecode(token);
+    // console.log(decoded) // for debugging
     return {
-      userId: decoded.userId, // Adjust based on your JWT structure
-      role: decoded.role, // Adjust based on your JWT structure
+      userId: decoded.user_id, // Adjust based on your JWT structure
+      role: decoded.authorities, // Adjust based on your JWT structure
     };
   } catch (error) {
     console.error("Error decoding JWT:", error);

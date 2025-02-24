@@ -34,6 +34,20 @@ export async function getUsers() {
   }
 }
 
+// Fetch user by ID
+export async function getUserById(userId) {
+  try {
+    const url = `${USERS_API_URL}/${userId}`;
+    const response = await axios.get(url, {
+      headers: getAuthHeaders(),
+    });
+    return response.data; // Assuming API returns user object directly
+  } catch (ex) {
+    console.error(`Error fetching user with ID ${userId}:`, ex);
+    return { status: "error", error: ex };
+  }
+}
+
 
 // Delete a user
 export async function deleteUser(id) {
@@ -47,26 +61,6 @@ export async function deleteUser(id) {
     console.error("Error deleting user:", ex);
     return { status: "error", error: ex };
   }
-}
-
-
-export async function register(firstName, lastName, email, phone, password, address, enrollment) {
-    try {
-      const url = createUrl('user/register')
-      const body = {
-        firstName, 
-        lastName, 
-        email,
-        password,
-        phone,
-        address,
-        enrollment,
-      }
-      const response = await axios.post(url, body)
-      return response.data
-    } catch (ex) {
-      return { status: 'error', error: ex }
-    }
 }
 
 // const API_URL = createUrl("users");

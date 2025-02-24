@@ -8,15 +8,13 @@ const EditBookDetailsPage = () => {
   return (
    
     
-     <MainLayout>
-     <div className={styles.membersContent} >
-
- <div className={styles.membersTableContainer}>
- 
-   <EditBookDetails />
- </div>
-</div>
-   </MainLayout>
+    <MainLayout>
+      <div className={styles.membersContent} >
+        <div className={styles.membersTableContainer}>
+          <EditBookDetails />
+        </div>
+      </div>
+    </MainLayout>
   );
 };
 

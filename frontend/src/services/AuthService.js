@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
 import { createUrl } from '../config';
 
 const API_URL = createUrl('auth');
@@ -11,16 +10,23 @@ const AuthService = {
 
       if (response.data.token) {
         const token = response.data.token;
-        sessionStorage.setItem('token', token); // Store token
-
-        // Decode the JWT token to get user role
-        const decodedToken = jwtDecode(token);  
-        return decodedToken.authorities;  // Expecting ["ROLE_USER"] or ["ROLE_ADMIN"]
+        sessionStorage.setItem('token', token);
+        return response.data; 
       }
 
       return null;
     } catch (error) {
       console.error('Login failed:', error.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
+  register: async (userData) => {
+    try {
+      const response = await axios.post(`${API_URL}/register`, userData);
+      return response.data; 
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -31,13 +37,8 @@ const AuthService = {
 
   logoutUser: async () => {
     try {
-      // Optional: Notify the backend if you later add a logout API
-      // await axios.post("/api/auth/logout"); 
-  
-      // Remove token from localStorage or cookies
       localStorage.removeItem("token");
       sessionStorage.removeItem("token");
-  
       return { success: true, message: "Logged out successfully" };
     } catch (error) {
       console.error("Logout failed:", error);
