@@ -1,73 +1,55 @@
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// // import AddBookPage from './pages/AddBookPage';
-// // import EditBookDetailsPage from './pages/EditBookDetailsPage';
-// // import BookDetails from './components/BookDetails';
-// import Reservation from './components/Reservation';
-
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<Reservation />} />
-//         {/* Add other routes here */}
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-
-
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Search } from "lucide-react";
+import FineService from "../../services/FineService";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Fine = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [fines, setFines] = useState([
-    {
-      id: 1,
-      member: "John Doe",
-      transactionId: "TXN123",
-      amount: 15.0,
-      paid: false,
-      dueDate: "2025-02-15",
-      returnDate: "2025-02-10",
-      daysLate: 5,
-    },
-    {
-      id: 2,
-      member: "Jane Smith",
-      transactionId: "TXN124",
-      amount: 25.0,
-      paid: true,
-      dueDate: "2025-02-12",
-      returnDate: "2025-02-05",
-      daysLate: 7,
-    },
-  ]);
+  const [fines, setFines] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Filter fines based on search query
-  const filteredFines = fines.filter(
-    (fine) =>
-      fine.member.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      fine.transactionId.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    fetchFines();
+  }, []);
 
-  // Handle marking a fine as paid
-  const handleMarkAsPaid = (id) => {
-    setFines(
-      fines.map((fine) =>
-        fine.id === id ? { ...fine, paid: true } : fine
-      )
-    );
-    Swal.fire("Success!", "Fine has been marked as paid.", "success");
+  const fetchFines = async () => {
+    try {
+      setLoading(true);
+      const response = await FineService.getAllFines();
+      setFines(response.items);
+    } catch (error) {
+      console.error("Error fetching fines:", error);
+      toast.error("Failed to fetch fines");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleMarkAsPaid = async (fineId) => {
+    try {
+      await FineService.updateFine(fineId, { status: "PAID" });
+      setFines((prevFines) =>
+        prevFines.map((fine) =>
+          fine.id === fineId ? { ...fine, status: "PAID" } : fine
+        )
+      );
+      toast.success("Fine has been marked as paid.");
+    } catch (error) {
+      console.error("Error updating fine:", error);
+      toast.error("Failed to update fine");
+    }
+  };
+
+  const filteredFines = fines.filter((fine) =>
+    (fine.member?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+    (fine.transactionId?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="container mt-4">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="row">
         <div className="col-lg-9 col-md-8 col-12">
           <div className="bg-white p-4 rounded shadow-sm">
@@ -82,63 +64,67 @@ const Fine = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                {/* <button className="btn btn-primary">Search</button> */}
                 <span className="input-group-text bg-primary text-white">
-                              <Search size={20} />
-                            </span>
-              
-              
-              
+                  <Search size={20} />
+                </span>
               </div>
             </div>
 
-            {/* Fine Table */}
-            <div className="table-responsive">
-              <table className="table table-bordered table-hover">
-                <thead className="table-dark">
-                  <tr>
-                    <th>Member</th>
-                    <th>Transaction ID</th>
-                    <th>Amount ($)</th>
-                    <th>Due Date</th>
-                    <th>Return Date</th>
-                    <th>Days Late</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredFines.map((fine) => (
-                    <tr key={fine.id}>
-                      <td>{fine.member}</td>
-                      <td>{fine.transactionId}</td>
-                      <td>{fine.amount.toFixed(2)}</td>
-                      <td>{fine.dueDate}</td>
-                      <td>{fine.returnDate}</td>
-                      <td>{fine.daysLate}</td>
-                      <td>
-                        <span
-                          className={`badge ${fine.paid ? "bg-success" : "bg-danger"}`}
-                        >
-                          {fine.paid ? "PAID" : "UNPAID"}
-                        </span>
-                      </td>
-                      <td>
-                        {!fine.paid && (
-                          <button
-                            className="btn btn-success"
-                            onClick={() => handleMarkAsPaid(fine.id)}
-                          >
-                            Mark as Paid
-                          </button>
-                        )}
-                      </td>
+            {loading ? (
+              <div className="text-center">Loading fines...</div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-bordered table-hover">
+                  <thead className="table-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Fine Amount (₹)</th>
+                      <th>Days Overdue</th>
+                      <th>Borrowed Record ID</th>
+                      <th>Status</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
+                  </thead>
+                  <tbody>
+                    {filteredFines.length > 0 ? (
+                      filteredFines.map((fine) => (
+                        <tr key={fine.id}>
+                          <td>{fine.id}</td>
+                          <td>₹{fine.fineAmount.toFixed(2)}</td>
+                          <td>{fine.daysOverdue}</td>
+                          <td>{fine.borrowRecordId}</td>
+                          <td>
+                            <span
+                              className={`badge ${
+                                fine.status === "PAID" ? "bg-success" : "bg-danger"
+                              }`}
+                            >
+                              {fine.status}
+                            </span>
+                          </td>
+                          <td>
+                            {fine.status !== "PAID" && (
+                              <button
+                                className="btn btn-success"
+                                onClick={() => handleMarkAsPaid(fine.id)}
+                              >
+                                Mark as Paid
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No fines found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>

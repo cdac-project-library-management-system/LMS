@@ -40,9 +40,9 @@ const MembersTable = () => {
     if (!member || !member.fullName || !member.email) return false; // Check correct property names
   
     return (
-      member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||  // ✅ Use fullName instead of name
+      member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||  // Use fullName instead of name
       member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (member.id && member.id.toString().includes(searchQuery))  // ✅ Use id instead of cardId
+      (member.id && member.id.toString().includes(searchQuery))  // Use id instead of cardId
     );
   });
   
