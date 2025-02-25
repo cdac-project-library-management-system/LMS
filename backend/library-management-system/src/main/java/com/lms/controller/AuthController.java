@@ -18,8 +18,8 @@ import com.lms.dto.request.UserRequestDTO;
 import com.lms.dto.response.LoginResponseDTO;
 import com.lms.dto.response.RegisterResponseDTO;
 import com.lms.dto.response.UserResponseDTO;
-import com.lms.security.JwtUtil;
 import com.lms.service.UserService;
+import com.lms.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 

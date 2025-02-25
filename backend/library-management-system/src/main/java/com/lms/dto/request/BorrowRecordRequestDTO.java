@@ -16,6 +16,6 @@ public class BorrowRecordRequestDTO {
     private Long bookId;
     private LocalDateTime borrowDate;
     private LocalDateTime dueDate;
-    private LocalDateTime returnDate;
+//    private LocalDateTime returnDate;
     private BorrowStatus status;
 }

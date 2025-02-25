@@ -10,15 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminLogResponseDTO {
-    
+
     private Long id;
-    
     private Long adminId;
-    
     private String action;
-    
-    private String details;
-    
-    private LocalDateTime createdAt;
+    private String entityType;
+    private Long entityId;
+    private LocalDateTime timestamp;
 
 }

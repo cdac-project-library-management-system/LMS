@@ -16,4 +16,6 @@ public interface FineService {
     
     PaginatedResponseDTO<FineResponseDTO> getAllFines(int page, int size);
 
+    PaginatedResponseDTO<FineResponseDTO> getAllFinesByCurrentUser(int page, int size);
+
 }

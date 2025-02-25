@@ -32,9 +32,17 @@ public class BorrowRecordController {
     
     // Create a new borrow record
     @PostMapping
-    public ResponseEntity<BorrowRecordResponseDTO> createBorrowRecord(@RequestBody BorrowRecordRequestDTO dto) {
-        BorrowRecordResponseDTO response = borrowRecordService.createBorrowRecord(dto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> createBorrowRecord(@RequestBody BorrowRecordRequestDTO dto) {
+        try {
+        	BorrowRecordResponseDTO response = borrowRecordService.createBorrowRecord(dto);
+            return ResponseEntity.ok(response);
+        } catch(ResourceNotFoundException ex) {
+        	ErrorResponseDTO errResp = new ErrorResponseDTO(
+        			"Resource not found",
+        			Collections.singletonList(ex.getMessage())
+        	);
+        	return new ResponseEntity<>(errResp, HttpStatus.NOT_FOUND);
+        }
     }
     
     // Update an existing borrow record

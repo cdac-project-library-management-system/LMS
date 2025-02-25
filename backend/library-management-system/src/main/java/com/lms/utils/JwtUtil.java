@@ -1,4 +1,4 @@
-package com.lms.security;
+package com.lms.utils;
 
 import java.security.Key;
 import java.util.Collection;
@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
+
+import com.lms.security.CustomUserDetailsImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
