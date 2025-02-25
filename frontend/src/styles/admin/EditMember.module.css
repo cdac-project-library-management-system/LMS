@@ -1,6 +1,5 @@
 /* Container Styles */
 .editUserContainer {
-    background-color: #f8f9fa;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -33,7 +32,7 @@
   }
   
   .form-control:focus {
-    border-color: #1e3a8a;
+    border-color: #ad5b5b;
     box-shadow: 0 0 5px rgba(30, 58, 138, 0.2);
   }
   

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Search } from "lucide-react";
 
 const Transaction = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,7 +93,9 @@ const Transaction = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="btn btn-primary">Search</button>
+                     <span className="input-group-text bg-primary text-white">
+                                                              <Search size={20} />
+                                                            </span>
               </div>
             </div>
 

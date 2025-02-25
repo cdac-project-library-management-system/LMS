@@ -1,12 +1,20 @@
 // pages/EditBookDetailsPage.jsx
 import React from 'react';
-import EditBookDetails from '../components/EditBookDetails';
+import EditBookDetails from '../../components/admin/EditBookDetails';
+import MainLayout from '../../components/admin/AdminMainLayout';
+import styles from '../../styles/admin/Pages.module.css';
 
 const EditBookDetailsPage = () => {
   return (
-    <div className="flex-fill p-4">
-      <EditBookDetails />
-    </div>
+   
+    
+    <MainLayout>
+      <div className={styles.membersContent} >
+        <div className={styles.membersTableContainer}>
+          <EditBookDetails />
+        </div>
+      </div>
+    </MainLayout>
   );
 };
 

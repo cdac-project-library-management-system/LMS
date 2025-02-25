@@ -31,7 +31,6 @@
   .navbar .nav-link {
     color: white !important;
   }
-  
   .navbar .nav-link:hover {
     color: var(--bs-link-color) !important;
   }

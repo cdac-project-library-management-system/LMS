@@ -1,263 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import BookService from "../../services/BookService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const EditBookDetails = ({ initialData }) => {
+const EditBookDetails = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  // Initialize form data dynamically based on props
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    publishDate: '',
-    category: '',
-    author: '',
-    publisher: '',
-    image: '',
-    imageFile: null,
+    title: "",
+    isbn: "",
+    description: "",
+    author: "",
+    copiesAvailable: "",
+    coverImageUrl: "",
+    categoryId: "",
   });
 
-  const [imageName, setImageName] = useState('');
   const [errors, setErrors] = useState({
     title: false,
-    publishDate: false,
-    category: false,
+    isbn: false,
     author: false,
-    publisher: false,
+    categoryId: false,
+    copiesAvailable: false,
   });
 
-  // Update state if initialData is provided
   useEffect(() => {
-    if (initialData) {
-      setFormData((prev) => ({
-        ...prev,
-        ...initialData,
-      }));
-
-      // Set image name if initialData contains an image
-      if (initialData.image) {
-        setImageName('Existing Image');
-      }
+    if (id) {
+      BookService.getBookById(id)
+        .then((data) => {
+          setFormData({
+            title: data.title || "",
+            isbn: data.isbn || "",
+            description: data.description || "",
+            author: data.author || "",
+            copiesAvailable: data.copiesAvailable || "",
+            coverImageUrl: data.coverImageUrl || "",
+            categoryId: data.categoryId || "",
+          });
+        })
+        .catch((error) => console.error("Error fetching book:", error));
     }
-  }, [initialData]);
+  }, [id]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic form validation
     const formErrors = {
       title: !formData.title,
-      publishDate: !formData.publishDate,
-      category: !formData.category,
+      isbn: !formData.isbn,
       author: !formData.author,
-      publisher: !formData.publisher,
+      categoryId: !formData.categoryId,
+      copiesAvailable: !formData.copiesAvailable,
     };
 
     setErrors(formErrors);
 
     if (Object.values(formErrors).every((val) => !val)) {
-      console.log('Form submitted:', formData);
-      navigate('/');
+      try {
+        await BookService.updateBook(id, formData);
+        toast.success("Book updated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        
+        setTimeout(()=>{
+          navigate(`/admin/BookDetails`);
+        },4000);
+      } catch (error) {
+        toast.error("Failed to update book. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
     }
   };
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'image') {
-      const file = files[0];
-      setFormData((prev) => ({
-        ...prev,
-        image: URL.createObjectURL(file),
-        imageFile: file,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
     <div className="card shadow-sm p-4 mb-5 bg-white rounded">
       <h1 className="h2 font-weight-bold mb-4 text-dark">Edit Book Details</h1>
+
+      <ToastContainer />
+
       <form onSubmit={handleSubmit}>
-        {/* Title */}
         <div className="form-group mb-4">
-          <label htmlFor="title" className="font-weight-bold text-secondary">
-            Book Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            className="form-control"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.title && (
-            <small className="text-danger">Title is required.</small>
-          )}
+          <label className="font-weight-bold text-secondary">Book Title</label>
+          <input type="text" name="title" className="form-control" value={formData.title} onChange={handleInputChange} required />
+          {errors.title && <small className="text-danger">Title is required.</small>}
         </div>
 
-        {/* Description */}
         <div className="form-group mb-4">
-          <label htmlFor="description" className="font-weight-bold text-secondary">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            className="form-control"
-            rows="3"
-            value={formData.description}
-            onChange={handleInputChange}
-          />
+          <label className="font-weight-bold text-secondary">ISBN</label>
+          <input type="text" name="isbn" className="form-control" value={formData.isbn} onChange={handleInputChange} required />
+          {errors.isbn && <small className="text-danger">ISBN is required.</small>}
         </div>
 
-        {/* Publish Date */}
         <div className="form-group mb-4">
-          <label htmlFor="publishDate" className="font-weight-bold text-secondary">
-            Publish Date
-          </label>
-          <input
-            type="date"
-            id="publishDate"
-            name="publishDate"
-            className="form-control"
-            value={formData.publishDate}
-            onChange={handleInputChange}
-            required
-          />
-          {errors.publishDate && (
-            <small className="text-danger">Publish date is required.</small>
-          )}
+          <label className="font-weight-bold text-secondary">Description</label>
+          <textarea name="description" className="form-control" rows="3" value={formData.description} onChange={handleInputChange}></textarea>
         </div>
 
-        {/* Category */}
         <div className="form-group mb-4">
-          <label htmlFor="category" className="font-weight-bold text-secondary">
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            className="custom-select"
-            value={formData.category}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-Fiction</option>
-          </select>
-          {errors.category && (
-            <small className="text-danger">Category is required.</small>
-          )}
-          <div className="mt-2">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => console.log('Add new category')}
-            >
-              Add New Category
-            </button>
-          </div>
+          <label className="font-weight-bold text-secondary">Author</label>
+          <input type="text" name="author" className="form-control" value={formData.author} onChange={handleInputChange} required />
+          {errors.author && <small className="text-danger">Author is required.</small>}
         </div>
 
-        {/* Author */}
         <div className="form-group mb-4">
-          <label htmlFor="author" className="font-weight-bold text-secondary">
-            Author
-          </label>
-          <select
-            id="author"
-            name="author"
-            className="custom-select"
-            value={formData.author}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Author</option>
-            <option value="author1">Author 1</option>
-            <option value="author2">Author 2</option>
-          </select>
-          {errors.author && (
-            <small className="text-danger">Author is required.</small>
-          )}
-          <div className="mt-2">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => console.log('Add new author')}
-            >
-              Add New Author
-            </button>
-          </div>
+          <label className="font-weight-bold text-secondary">Available Copies</label>
+          <input type="text" name="copiesAvailable" className="form-control" value={formData.copiesAvailable} onChange={handleInputChange} required />
+          {errors.copiesAvailable && <small className="text-danger">Available Copies are required.</small>}
         </div>
 
-        {/* Publisher */}
         <div className="form-group mb-4">
-          <label htmlFor="publisher" className="font-weight-bold text-secondary">
-            Publisher
-          </label>
-          <select
-            id="publisher"
-            name="publisher"
-            className="custom-select"
-            value={formData.publisher}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Publisher</option>
-            <option value="publisher1">Publisher 1</option>
-            <option value="publisher2">Publisher 2</option>
-          </select>
-          {errors.publisher && (
-            <small className="text-danger">Publisher is required.</small>
-          )}
-          <div className="mt-2">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => console.log('Add new publisher')}
-            >
-              Add New Publisher
-            </button>
-          </div>
+          <label className="font-weight-bold text-secondary">Cover Image URL</label>
+          <input type="text" name="coverImageUrl" className="form-control" value={formData.coverImageUrl} onChange={handleInputChange} required />
         </div>
 
-        {/* Image */}
         <div className="form-group mb-4">
-          <label htmlFor="image" className="font-weight-bold text-secondary">
-            Image
-          </label>
-          <div className="custom-file">
-            <input
-              type="file"
-              id="image"
-              name="image"
-              className="custom-file-input"
-              onChange={handleInputChange}
-              accept="image/*"
-            />
-            <label className="custom-file-label">
-              {imageName ? imageName : ''}
-            </label>
-          </div>
-          {formData.image && (
-            <img
-              src={formData.image}
-              alt="Book cover"
-              className="img-thumbnail mt-2"
-              style={{ width: '100px', height: '150px' }}
-            />
-          )}
+          <label className="font-weight-bold text-secondary">Category ID</label>
+          <input type="text" name="categoryId" className="form-control" value={formData.categoryId} onChange={handleInputChange} required />
+          {errors.categoryId && <small className="text-danger">Category ID is required.</small>}
         </div>
 
-        {/* Submit Button */}
         <button type="submit" className="btn btn-primary btn-block">
-          <i className="fas fa-save mr-2"></i>Update Book
+          <i className="fas fa-save mr-2"></i> Update Book
         </button>
       </form>
     </div>

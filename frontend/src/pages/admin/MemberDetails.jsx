@@ -2,9 +2,8 @@
         import React from 'react';
         import MembersTable from '../../components/admin/MemberTable';
         import MainLayout from '../../components/admin/AdminMainLayout';
-        import styles from '../../styles/admin/MemberList.module.css';
-        import EditMember from '../../components/admin/EditMember';
-        import EditUser from '../../components/admin/EditUser';
+        import styles from '../../styles/admin/Pages.module.css';
+       
         
         const MemberDetailsPage = () => {
           return (

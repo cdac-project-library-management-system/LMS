@@ -21,6 +21,7 @@
 
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { Search } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Fine = () => {
@@ -81,7 +82,13 @@ const Fine = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="btn btn-primary">Search</button>
+                {/* <button className="btn btn-primary">Search</button> */}
+                <span className="input-group-text bg-primary text-white">
+                              <Search size={20} />
+                            </span>
+              
+              
+              
               </div>
             </div>
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Card, Alert, Spinner, Container, Row, Col, InputGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import '../../../styles/user/Auth.module.css';
+import AuthService from '../../../services/AuthService';
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
@@ -10,30 +10,43 @@ const RegisterForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [dob, setDob] = useState('');
   const [address, setAddress] = useState('');
-  const [gender, setGender] = useState('');
-  const [profilePic, setProfilePic] = useState(null);
+  const [profilePicUrl, setProfilePicUrl] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError('');
-    setLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
+      setError('Passwords do not match.');
       return;
     }
 
-    setTimeout(() => {
+    const userData = { 
+      fullName: name,  // Ensure it matches backend DTO field 
+      email:email, 
+      password:password, 
+      phoneNumber: phone, 
+      address:address, 
+      profilePicUrl 
+    };
+    
+    setLoading(true);
+
+    try {
+      await AuthService.register(userData);
+      navigate('/login'); // Redirect to login after successful registration
+    } catch (error) {
+      setError(error.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
       setLoading(false);
-      alert('Registration Successful! Redirecting...');
-    }, 2000);
+    }
   };
 
   return (
@@ -42,12 +55,11 @@ const RegisterForm = () => {
         <Col md={6} xs={12} className="d-flex justify-content-center">
           <Card className="auth-card w-100 p-4 shadow-lg rounded">
             <Card.Body>
-              <h2 className="text-center card-title text-primary">Sign Up</h2>
+              <h2 className="text-center card-title">Sign Up</h2>
               <p className="text-center text-muted mb-4">Create your account to get started</p>
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Form onSubmit={handleSubmit}>
-                {/* Name Field */}
                 <Form.Group controlId="formName" className="mb-3">
                   <Form.Label>Full Name</Form.Label>
                   <Form.Control 
@@ -59,7 +71,6 @@ const RegisterForm = () => {
                   />
                 </Form.Group>
 
-                {/* Email Field */}
                 <Form.Group controlId="formEmail" className="mb-3">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control 
@@ -71,7 +82,6 @@ const RegisterForm = () => {
                   />
                 </Form.Group>
 
-                {/* Phone Number Field */}
                 <Form.Group controlId="formPhone" className="mb-3">
                   <Form.Label>Phone Number</Form.Label>
                   <Form.Control 
@@ -83,18 +93,6 @@ const RegisterForm = () => {
                   />
                 </Form.Group>
 
-                {/* Date of Birth Field */}
-                <Form.Group controlId="formDob" className="mb-3">
-                  <Form.Label>Date of Birth</Form.Label>
-                  <Form.Control 
-                    type="date" 
-                    value={dob} 
-                    onChange={(e) => setDob(e.target.value)} 
-                    required
-                  />
-                </Form.Group>
-
-                {/* Address Field */}
                 <Form.Group controlId="formAddress" className="mb-3">
                   <Form.Label>Address</Form.Label>
                   <Form.Control 
@@ -107,33 +105,16 @@ const RegisterForm = () => {
                   />
                 </Form.Group>
 
-                {/* Gender Field */}
-                <Form.Group controlId="formGender" className="mb-3">
-                  <Form.Label>Gender</Form.Label>
+                <Form.Group controlId="formProfilePicUrl" className="mb-3">
+                  <Form.Label>Profile Picture URL</Form.Label>
                   <Form.Control 
-                    as="select" 
-                    value={gender} 
-                    onChange={(e) => setGender(e.target.value)} 
-                    required
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </Form.Control>
-                </Form.Group>
-
-                {/* Profile Picture Upload */}
-                <Form.Group controlId="formProfilePic" className="mb-3">
-                  <Form.Label>Profile Picture</Form.Label>
-                  <Form.Control 
-                    type="file" 
-                    onChange={(e) => setProfilePic(e.target.files[0])} 
-                    accept="image/*"
+                    type="text" 
+                    placeholder="Enter image URL" 
+                    value={profilePicUrl} 
+                    onChange={(e) => setProfilePicUrl(e.target.value)} 
                   />
                 </Form.Group>
 
-                {/* Password Field */}
                 <Form.Group controlId="formPassword" className="mb-3">
                   <Form.Label>Password</Form.Label>
                   <InputGroup>
@@ -150,7 +131,6 @@ const RegisterForm = () => {
                   </InputGroup>
                 </Form.Group>
 
-                {/* Confirm Password Field */}
                 <Form.Group controlId="formConfirmPassword" className="mb-3">
                   <Form.Label>Confirm Password</Form.Label>
                   <InputGroup>
@@ -167,7 +147,6 @@ const RegisterForm = () => {
                   </InputGroup>
                 </Form.Group>
 
-                {/* Submit Button */}
                 <Button variant="primary" type="submit" className="w-100" disabled={loading}>
                   {loading ? <Spinner animation="border" size="sm" /> : 'Register'}
                 </Button>

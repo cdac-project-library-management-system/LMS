@@ -1,59 +1,61 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import styles from '../../styles/user/BrowseCategories.module.css';
+import React, { useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import BookCard from "./BookCard";
+import styles from "../../styles/user/UserHome.module.css";
 
-const BrowseCategories = () => {
-  const [selectedCategory, setSelectedCategory] = useState(1);
+const BrowseCategory = ({ books }) => {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedAuthor, setSelectedAuthor] = useState("All");
 
-  const categories = [
-    { id: 1, name: 'Science Fiction', items: ['Dune', 'Neuromancer', 'The Left Hand of Darkness'] },
-    { id: 2, name: 'Mystery', items: ['Gone Girl', 'The Girl with the Dragon Tattoo', 'The Silent Patient'] },
-    { id: 3, name: 'Fantasy', items: ['The Name of the Wind', 'Mistborn', 'A Game of Thrones'] },
-    { id: 4, name: 'Non-Fiction', items: ['Sapiens', 'Educated', 'Atomic Habits'] },
-    { id: 5, name: 'Biography', items: ['Steve Jobs', 'Becoming', 'Educated'] },
-  ];
+  // Extract unique categories & authors for dropdowns
+  const categories = ["All", ...new Set(books.map(book => book.category))];
+  const authors = ["All", ...new Set(books.map(book => book.author))];
 
-  const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
+  // Filter books
+  const filteredBooks = books.filter(book =>
+    (selectedCategory === "All" || book.category === selectedCategory) &&
+    (selectedAuthor === "All" || book.author === selectedAuthor)
+  );
 
   return (
-    <div className={styles.container}>
-      <nav className={styles.navbar}>
-        <div className={styles.navContainer}>
-          <h2 className={styles.logo}>Book Finder</h2>
-          <div className={styles.navScrollContainer}>
-            <div className={styles.navLinks}>
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  className={`${styles.navLink} ${selectedCategory === category.id ? styles.active : ''}`}
-                  onClick={() => setSelectedCategory(category.id)}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Container className={styles.userHome}>
+      <h2 className={`text-center ${styles.homeTitle}`} style={{ color: "#3b3b3b" }}>📚 Browse Books</h2>
 
-      <div className={styles.contentContainer}>
-        <div className={styles.categoryHeader}>
-          <h2 className={styles.categoryTitle}>{selectedCategoryData?.name}</h2>
-          <p className={styles.categoryCount}>{selectedCategoryData?.items.length} titles</p>
-        </div>
-        
-        <div className={styles.itemsList}>
-          {selectedCategoryData?.items.map((item, index) => (
-            <div key={index} className={styles.listItem}>
-              <Link to={`/book/${encodeURIComponent(item)}`} className={styles.itemLink}>
-                {item}
-              </Link>
-            </div>
-          ))}
-        </div>
+      {/* Filter Options */}
+      <div className={styles.filterContainer}>
+        <Form.Select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className={styles.filterDropdown}>
+          {categories.map(category => <option key={category} value={category}>{category}</option>)}
+        </Form.Select>
+
+        <Form.Select value={selectedAuthor} onChange={(e) => setSelectedAuthor(e.target.value)} className={styles.filterDropdown}>
+          {authors.map(author => <option key={author} value={author}>{author}</option>)}
+        </Form.Select>
       </div>
-    </div>
+
+      {/* Display Books */}
+      <Section title="📖 Available Books" books={filteredBooks} />
+    </Container>
   );
 };
 
-export default BrowseCategories;
+// Reusable Section Component
+const Section = ({ title, books }) => (
+  <div className={styles.bookSection}>
+    <h3 className={styles.sectionTitle}>{title}</h3>
+    <div className={styles.scrollContainer}>
+      <div className={styles.booksRow}>
+        {books.length > 0 ? (
+          books.map((book) => (
+            <div key={book.id} className={styles.bookCardWrapper}>
+              <BookCard book={book} />
+            </div>
+          ))
+        ) : (
+          <p className="text-center">No books found.</p>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+export default BrowseCategory;

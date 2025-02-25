@@ -1,35 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/admin/MemberTable.module.css";
+import { getUsers, deleteUser } from "../../services/user"; // Import service functions
 
 const MembersTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const [members, setMembers] = useState([
-    { id: 1, name: "AAA", cardId: "2343243", group: "Student", email: "DFDSF@GASDVD", address: "DDSDAS", department: "WVSAD", education: "Doctoral", classNumber: 2, startDate: "01-01-2015" },
-    { id: 2, name: "HAMAAA", cardId: "222222222222", group: "Student", email: "VSDV@SEFW", address: "DVSVSF", department: "DVSV", education: "Master", classNumber: 1, startDate: "22-05-2020" },
-    { id: 3, name: "Alan Ahmad", cardId: "alan", group: "Student", email: "123@asd", address: "CS", department: "CS", education: "Master", classNumber: 1, startDate: "01-04-2020" },
-    { id: 1, name: "AAA", cardId: "2343243", group: "Student", email: "DFDSF@GASDVD", address: "DDSDAS", department: "WVSAD", education: "Doctoral", classNumber: 2, startDate: "01-01-2015" },
-    { id: 2, name: "HAMAAA", cardId: "222222222222", group: "Student", email: "VSDV@SEFW", address: "DVSVSF", department: "DVSV", education: "Master", classNumber: 1, startDate: "22-05-2020" },
-    { id: 3, name: "Alan Ahmad", cardId: "alan", group: "Student", email: "123@asd", address: "CS", department: "CS", education: "Master", classNumber: 1, startDate: "01-04-2020" },
-    { id: 1, name: "AAA", cardId: "2343243", group: "Student", email: "DFDSF@GASDVD", address: "DDSDAS", department: "WVSAD", education: "Doctoral", classNumber: 2, startDate: "01-01-2015" },
-    { id: 2, name: "HAMAAA", cardId: "222222222222", group: "Student", email: "VSDV@SEFW", address: "DVSVSF", department: "DVSV", education: "Master", classNumber: 1, startDate: "22-05-2020" },
-    { id: 3, name: "Alan Ahmad", cardId: "alan", group: "Student", email: "123@asd", address: "CS", department: "CS", education: "Master", classNumber: 1, startDate: "01-04-2020" },
-      
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch members from backend API
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const data = await getUsers();
   
+        if (!Array.isArray(data)) {
+          throw new Error("Data is not an array");
+        }
   
-  ]);
+        setMembers(data);
+      } catch (error) {
+        console.error("Error fetching members:", error);
+        Swal.fire("Error", "Failed to fetch members. Please try again.", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchMembers();
+  }, []);
+  
 
   // Filter members based on search query
+  const filteredMembers = members.filter((member) => {
+    if (!member || !member.fullName || !member.email) return false; // Check correct property names
   
-  const filteredMembers = members.filter((member) =>
-    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (member.cardId && member.cardId.toString().includes(searchQuery)) || // Ensure cardId exists
-    member.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    return (
+      member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||  // ✅ Use fullName instead of name
+      member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (member.id && member.id.toString().includes(searchQuery))  // ✅ Use id instead of cardId
+    );
+  });
+  
   
 
   // Navigate to Edit User
@@ -37,10 +53,10 @@ const MembersTable = () => {
     navigate(`/admin/EditUser/${id}`);
   };
 
-  // Show a confirmation popup using SweetAlert2 before deleting
+  // Delete confirmation
   const confirmDelete = (id, name) => {
     Swal.fire({
-      title: `Are you sure?`,
+      title: "Are you sure?",
       text: `Do you want to delete user ${name}?`,
       icon: "warning",
       showCancelButton: true,
@@ -54,15 +70,11 @@ const MembersTable = () => {
     });
   };
 
-  // Delete user if confirmed
+  // Handle delete
   const handleDelete = async (id, name) => {
     try {
-      // API call to delete user
-      const response = await fetch(`https://api.example.com/users/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
+      const success = await deleteUser(id);
+      if (success) {
         setMembers(members.filter((member) => member.id !== id));
         Swal.fire("Deleted!", `User ${name} has been deleted.`, "success");
       } else {
@@ -75,7 +87,6 @@ const MembersTable = () => {
 
   return (
     <div className={`container mt-4 ${styles.membersContainer}`}>
-      {/* Search Bar */}
       <div className="row mb-3">
         <div className="col-md-4 ms-auto">
           <div className="input-group">
@@ -93,46 +104,46 @@ const MembersTable = () => {
         </div>
       </div>
 
-      {/* Members Table */}
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover members-table">
-          <thead className="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Card ID</th>
-              <th>Member Group</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Department</th>
-          
-              <th>Class</th>
-             
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredMembers.map((member) => (
-              <tr key={member.id}>
-                <td>{member.id}</td>
-                <td>{member.name}</td>
-                <td>{member.cardId}</td>
-                <td>{member.group}</td>
-                <td>{member.email}</td>
-                <td>{member.address}</td>
-                <td>{member.department}</td>
-              
-                <td>{member.classNumber}</td>
-               
-                <td>
-                  <button className={`${styles.editButton} me-2`} onClick={() => handleEdit(member.id)}>Edit</button>
-                  <button className={styles.deleteButton} onClick={() => confirmDelete(member.id, member.name)}>Delete</button>
-                </td>
+      {loading ? (
+        <p className="text-center">Loading members...</p>
+      ) : (
+        <div className="table-responsive">
+          <table className="table table-bordered table-hover members-table">
+            <thead className="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filteredMembers.length > 0 ? (
+                filteredMembers.map((member) => (
+                  <tr key={member.id}>
+                    <td>{member.id}</td>
+                    <td>{member.fullName}</td> {/* Use fullName instead of name */}
+                    <td>{member.email}</td> {/* Use id instead of cardId */}
+                    <td>{member.phoneNumber || "N/A"}</td> {/* Handle missing fields gracefully */}
+                    <td>{member.address}</td>
+                    <td>
+                      <button className={`${styles.editButton} me-2`} onClick={() => handleEdit(member.id)}>Edit</button>
+                      <button className={styles.deleteButton} onClick={() => confirmDelete(member.id, member.fullName)}>Delete</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="text-center">No members found.</td>
+                </tr>
+              )}
+            </tbody>
+
+          </table>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,15 +10,10 @@ const ReservationPage = () => {
   return (
     <MainLayout>
       <div className={styles.membersContent}>
-     
-
-
-  <div className={styles.membersTableContainer}>
-  <Reservation/>
-  
-  </div>
-  </div>
-
+        <div className={styles.membersTableContainer}>
+          <Reservation/>
+        </div>
+      </div>
     </MainLayout>
   );
 };

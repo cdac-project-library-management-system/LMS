@@ -1,20 +1,6 @@
-.membersContainer {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-
-
-
-
-
-
-
-
 /* Table Container: Fixed height and scrollable */
 .table-responsive {
-    max-height: 500px; /* Adjust height as needed */
+    max-height: 300px; /* Adjust height as needed */
     overflow-y: auto;  /* Enables vertical scrolling */
     border-radius: 8px;
     overflow-x: hidden; /* Prevent horizontal scrollbar */
@@ -24,12 +10,12 @@
 .members-table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    /* backgroun/d: white; */
 }
 
 /* Table header styling */
 .members-table th {
-    background: #1E3A8A;
+    background: #ad5b5b;
     color: white;
     position: sticky;
     top: 0;
@@ -80,7 +66,7 @@
 }
 
 .input-group-text:hover {
-    background-color: #0056b3 !important;
+    background-color: #ad5b5b;
 }
 
 /* Responsive Design */

@@ -3,7 +3,7 @@ import { Form, Button, Card, Alert, Spinner, Container, Row, Col, InputGroup } f
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 
-const LoginForm = () => {
+const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -16,11 +16,10 @@ const LoginForm = () => {
     setError('');
 
     try {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+      await onLogin(email, password); // Call the login function passed from Login.jsx
     } catch (err) {
       setError('Invalid credentials, please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -59,13 +58,13 @@ const LoginForm = () => {
                       onChange={(e) => setPassword(e.target.value)} 
                       required 
                     />
-                    <Button variant="outline-secondary" onClick={() => setShowPassword(!showPassword)}>
+                    <Button variant="" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </Button>
                   </InputGroup>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+                <Button style={{backgroundColor:"#ad5b5b"}} variant="" type="submit" className="w-100" disabled={loading}>
                   {loading ? <Spinner animation="border" size="sm" /> : 'Login'}
                 </Button>
               </Form>

@@ -18,13 +18,12 @@ A web-based application designed for public libraries to manage books, members, 
 - **Non-Functional:** Secure, scalable, and responsive design.
 
 ## Tech Stack
-- **Frontend:** React.js
-- **Backend:** Java, or/and Node.js
+- **Frontend:** React.js, Html , Css , JavaScript
+- **Backend:** Java,SpringBoot
 - **Database:** MySQL
 
 ## Future Plans
-- Build the interface and backend.
-- Test and deploy for public libraries.
+-Deploy for public libraries.
 
 ## License
 MIT License - see the [LICENSE](LICENSE) file.

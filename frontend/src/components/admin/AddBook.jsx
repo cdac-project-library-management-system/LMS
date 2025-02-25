@@ -1,130 +1,103 @@
-// components/BookForm.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import BookService from '../../services/BookService';
 
 const AddBook = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
+    isbn: '',
     description: '',
-    publishDate: '',
-    category: '',
     author: '',
-    publisher: '',
-    image: null
+    copiesAvailable: '',
+    coverImageUrl: '',
+    categoryId: ''
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    navigate('/');
+    setLoading(true);
+
+    try {
+      await BookService.addBook(formData);
+      toast.success("Book added successfully!", { position: "top-right", autoClose: 3000 });
+
+      // Clear form fields after successful submission
+      setFormData({
+        title: '',
+        isbn: '',
+        description: '',
+        author: '',
+        copiesAvailable: '',
+        coverImageUrl: '',
+        categoryId: ''
+      });
+    } catch (err) {
+      toast.error("Failed to add the book. Please try again.", { position: "top-right", autoClose: 3000 });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: files ? files[0] : value
+      [name]: value
     }));
   };
 
   return (
     <div className="card shadow-sm p-4 mb-5 bg-white rounded">
       <h1 className="h2 font-weight-bold mb-4 text-dark">Add New Book</h1>
+      
+      {/* Toast Notifications */}
+      <ToastContainer />
+
       <form onSubmit={handleSubmit}>
         <div className="form-group mb-4">
           <label className="font-weight-bold text-secondary">Book Title</label>
-          <input
-            type="text"
-            name="title"
-            className="form-control"
-            onChange={handleInputChange}
-            required
-          />
+          <input type="text" name="title" className="form-control" value={formData.title} onChange={handleInputChange} required />
+        </div>
+
+        <div className="form-group mb-4">
+          <label className="font-weight-bold text-secondary">ISBN</label>
+          <input type="text" name="isbn" className="form-control" value={formData.isbn} onChange={handleInputChange} required />
         </div>
 
         <div className="form-group mb-4">
           <label className="font-weight-bold text-secondary">Description</label>
-          <textarea
-            name="description"
-            className="form-control"
-            rows="3"
-            onChange={handleInputChange}
-          ></textarea>
-        </div>
-
-        <div className="form-group mb-4">
-          <label className="font-weight-bold text-secondary">Publish Date</label>
-          <input
-            type="date"
-            name="publishDate"
-            className="form-control"
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-
-        <div className="form-group mb-4">
-          <label className="font-weight-bold text-secondary">Category</label>
-          <select
-            name="category"
-            className="form-control"
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-Fiction</option>
-          </select>
+          <textarea name="description" className="form-control" rows="3" value={formData.description} onChange={handleInputChange}></textarea>
         </div>
 
         <div className="form-group mb-4">
           <label className="font-weight-bold text-secondary">Author</label>
-          <select
-            name="author"
-            className="form-control"
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Author</option>
-            <option value="author1">Author 1</option>
-            <option value="author2">Author 2</option>
-          </select>
+          <input type="text" name="author" className="form-control" value={formData.author} onChange={handleInputChange} required />
+        </div>
+        
+        <div className="form-group mb-4">
+          <label className="font-weight-bold text-secondary">Available Copies</label>
+          <input type="text" name="copiesAvailable" className="form-control" value={formData.copiesAvailable} onChange={handleInputChange} required />
         </div>
 
         <div className="form-group mb-4">
-          <label className="font-weight-bold text-secondary">Publisher</label>
-          <select
-            name="publisher"
-            className="form-control"
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Publisher</option>
-            <option value="publisher1">Publisher 1</option>
-            <option value="publisher2">Publisher 2</option>
-          </select>
+          <label className="font-weight-bold text-secondary">Cover Image URL</label>
+          <input type="text" name="coverImageUrl" className="form-control" value={formData.coverImageUrl} onChange={handleInputChange} required />
         </div>
 
         <div className="form-group mb-4">
-          <label className="font-weight-bold text-secondary">Image</label>
-          <div className="custom-file">
-            <input
-              type="file"
-              name="image"
-              className="custom-file-input"
-              onChange={handleInputChange}
-              accept="image/*"
-            />
-            <label className="custom-file-label">Choose file</label>
-          </div>
+          <label className="font-weight-bold text-secondary">Category ID</label>
+          <input type="text" name="categoryId" className="form-control" value={formData.categoryId} onChange={handleInputChange} required />
         </div>
 
         <button
           type="submit"
-          className="btn btn-primary btn-block"
+          className="btn btn-block text-white"
+          disabled={loading}
+          style={{backgroundColor:"#ad5b5b"}}
         >
-          <i className="fas fa-plus-circle mr-2"></i>Add Book
+          {loading ? "Adding..." : <><i className="fas fa-plus-circle mr-2"></i>Add Book</>}
         </button>
       </form>
     </div>

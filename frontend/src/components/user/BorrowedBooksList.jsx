@@ -7,7 +7,7 @@ const BorrowedBooksList = ({ booksData }) => {  // Receive booksData as prop
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
 
   const filteredBooks = booksData.filter(
     (book) =>
@@ -41,7 +41,7 @@ const BorrowedBooksList = ({ booksData }) => {  // Receive booksData as prop
 
   return (
     <div className="borrowed-books-container p-4">
-      <h2 className="text-center text-primary mb-4">📚 Borrowed Books</h2>
+      <h2 className="text-center mb-4">📚 Borrowed Books</h2>
       <InputGroup className="mb-3">
         <Form.Control
           type="text"
@@ -51,7 +51,7 @@ const BorrowedBooksList = ({ booksData }) => {  // Receive booksData as prop
         />
       </InputGroup>
       <Table striped bordered hover responsive className="text-center shadow-sm">
-        <thead className="bg-primary text-white">
+        <thead className=" text-white">
           <tr>
             <th>No.</th>
             <th onClick={() => handleSort("title")} style={{ cursor: "pointer" }}>Book Title ⬍</th>
@@ -92,7 +92,7 @@ const BorrowedBooksList = ({ booksData }) => {  // Receive booksData as prop
         {[...Array(totalPages)].map((_, index) => (
           <Pagination.Item key={index} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
             {index + 1}
-          </Pagination.Item>
+          </Pagination.Item >
         ))}
         <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
       </Pagination>

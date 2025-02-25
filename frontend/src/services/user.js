@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {createUrl}  from '../config'
+import {createUrl, getAuthHeaders}  from '../config'
+import { getUserInfo } from './api';
 
 //template
 // export async function get....(){
@@ -10,39 +11,59 @@ import {createUrl}  from '../config'
 //     }
 // }
 
-export async function login(email, password) {
-  try {
-    const url = createUrl('user/login')
-    const body = {
-        email,
-        password
-    }
-    const response = await axios.post(url, body)
+const USERS_API_URL = createUrl("users");
 
-    return response.data
+// Fetch all users
+export async function getUsers() {
+  try {
+    const response = await axios.get(createUrl("users"), {
+      headers: getAuthHeaders(),
+    });
+    // Check if response contains an array
+    if (Array.isArray(response.data)) {
+      return response.data; // ✅ Return as expected
+    } else if (response.data && Array.isArray(response.data.items)) {
+      return response.data.items; // ✅ Adjust if API wraps it inside `items`
+    } else {
+      console.error("Unexpected response format:", response.data);
+      return []; // ✅ Return empty array to prevent crash
+    }
   } catch (ex) {
-    return { status: 'error', error: ex }
+    console.error("Error fetching users:", ex);
+    return []; 
   }
 }
 
-export async function register(firstName, lastName, email, phone, password, address, enrollment) {
-    try {
-      const url = createUrl('user/register')
-      const body = {
-        firstName, 
-        lastName, 
-        email,
-        password,
-        phone,
-        address,
-        enrollment,
-      }
-      const response = await axios.post(url, body)
-      return response.data
-    } catch (ex) {
-      return { status: 'error', error: ex }
-    }
+// Fetch user by ID
+export async function getUserById(userId) {
+  try {
+    const url = `${USERS_API_URL}/${userId}`;
+    const response = await axios.get(url, {
+      headers: getAuthHeaders(),
+    });
+    return response.data; // Assuming API returns user object directly
+  } catch (ex) {
+    console.error(`Error fetching user with ID ${userId}:`, ex);
+    return { status: "error", error: ex };
+  }
 }
+
+
+// Delete a user
+export async function deleteUser(id) {
+  try {
+    const url = `${USERS_API_URL}/${id}`;
+    const response = await axios.delete(url, {
+      headers: getAuthHeaders(),
+    });
+    return response.status === 200;
+  } catch (ex) {
+    console.error("Error deleting user:", ex);
+    return { status: "error", error: ex };
+  }
+}
+
+// const API_URL = createUrl("users");
 
 export async function changePassword(newPassword) {
 try {
@@ -61,23 +82,28 @@ try {
 }
 
 export async function getMyProfile() {
-    try {
-      const url = createUrl('user/profile')
-      const token = sessionStorage['token']
+  try {
+      const user = getUserInfo();
+      if (!user || !user.userId) {
+          throw new Error("User ID not found in token.");
+      }
+
+      const url = createUrl(`users/${user.userId}`); // Pass userId in URL
       const response = await axios.get(url, {
-        headers: {
-          token,
-        },
-      })
-      return response.data
-    } catch (ex) {
-      return { status: 'error', error: ex }
-    }
+          headers: getAuthHeaders(), // Ensure authentication headers are included
+      });
+
+      return response.data;
+  } catch (ex) {
+      console.error("Error fetching profile:", ex);
+      return { status: "error", error: ex.message };
+  }
 }
+
 
 export async function editMyProfile(firstName, lastName, phone, email, address, enrollment ) {
     try {
-      const url = createUrl('user/profile')
+      const url = createUrl('users')
       const token = sessionStorage['token']
       const body = {
         firstName,
@@ -137,6 +163,7 @@ export async function getAllBooks(){
           token,
         }
       })
+      console.log(response.data)
       return response.data;
   }catch(ex){
       return {status: 'error', error:ex}
