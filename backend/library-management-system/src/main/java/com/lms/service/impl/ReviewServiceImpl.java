@@ -54,7 +54,11 @@ public class ReviewServiceImpl implements ReviewService {
         if (dto.getComment() != null) review.setComment(dto.getComment());
         if (dto.getReviewDate() != null) review.setReviewDate(dto.getReviewDate());
         review = reviewRepository.save(review);
-        return modelMapper.map(review, ReviewResponseDTO.class);
+        ReviewResponseDTO response = new ReviewResponseDTO();
+        response.setUserId(review.getUser().getId());
+        response.setBookId(review.getBook().getId());
+        modelMapper.map(review, response);
+        return response;
     }
 
     @Override

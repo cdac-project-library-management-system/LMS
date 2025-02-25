@@ -46,7 +46,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login", "/auth/register", "/v*/api-doc*/**", "/swagger-ui/**", "/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow pre-flight requests
-                .requestMatchers("/books/**", "/borrowRecords/**", "/reservations/**", "/reviews/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/books/**", "/borrowRecords/**", "/reservations/**", "/reviews/**", "/fines/me").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
