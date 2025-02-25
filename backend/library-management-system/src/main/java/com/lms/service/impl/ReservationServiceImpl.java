@@ -15,6 +15,7 @@ import com.lms.dto.request.BorrowRecordRequestDTO;
 import com.lms.dto.request.ReservationRequestDTO;
 import com.lms.dto.response.ReservationResponseDTO;
 import com.lms.entities.Reservation;
+import com.lms.entities.enums.BorrowStatus;
 import com.lms.entities.enums.ReservationStatus;
 import com.lms.exceptions.ResourceNotFoundException;
 import com.lms.repository.BookRepository;
