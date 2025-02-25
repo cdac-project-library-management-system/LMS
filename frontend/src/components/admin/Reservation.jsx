@@ -4,99 +4,106 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Search } from "lucide-react";
 import ReservationService from "../../services/ReservationService";
 import BookService from "../../services/BookService";
-import BorrowService from "../../services/BorrowService";
 import { getUserById } from "../../services/user";
 
 const Reservation = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [reservations, setReservations] = useState([]);
+  const [reservations, setReservations] = useState([]); // All reservations
   const [page, setPage] = useState(0); // Track current page
-  const [totalPages, setTotalPages] = useState(1); // Track total pages
+  const [pageSize] = useState(10); // Records per page
 
   useEffect(() => {
-    fetchReservations();
+    fetchAllReservations();
   }, []);
 
-  const fetchReservations = async (currentPage = 0) => {
+  const fetchAllReservations = async () => {
     try {
-      const response = await ReservationService.getAllReservations(currentPage, 10); // Fetch paginated data
-      let reservationsList = response.items || [];
-      console.log(response);
-      
-      setTotalPages(response.totalPages || 1); // Store total pages
-  
-      const updatedReservations = await Promise.all(
-        reservationsList.map(async (reservation) => {
-          let bookTitle = "Unknown Book";
-          let userName = "Unknown User";
-  
-          try {
-            const book = await BookService.getBookById(reservation.bookId);
-            if (book && book.title) {
-              bookTitle = book.title;
-            }
-          } catch (error) {
-            console.error(`Error fetching book ${reservation.bookId}:`, error);
-          }
-  
-          try {
-            const user = await getUserById(reservation.userId);
-            if (user && user.fullName) {
-              userName = user.fullName;
-            }
-          } catch (error) {
-            console.error(`Error fetching user ${reservation.userId}:`, error);
-          }
-  
-          return {
-            ...reservation,
-            bookTitle,
-            userName,
-          };
-        })
-      );
-  
-      // Sort reservations by latest date first
-      updatedReservations.sort((a, b) => new Date(b.reservationDate) - new Date(a.reservationDate));
-  
-      setReservations(updatedReservations);
+      let allReservations = [];
+      let currentPage = 0;
+      let totalPages = 1;
+
+      while (currentPage < totalPages) {
+        const response = await ReservationService.getAllReservations(currentPage, 10);
+        const reservationsList = response.items || [];
+
+        if (reservationsList.length > 0) {
+          totalPages = response.totalPages || 1;
+          currentPage++;
+
+          const updatedReservations = await Promise.all(
+            reservationsList.map(async (reservation) => {
+              let bookTitle = "Unknown Book";
+              let userName = "Unknown User";
+
+              try {
+                const book = await BookService.getBookById(reservation.bookId);
+                if (book && book.title) {
+                  bookTitle = book.title;
+                }
+              } catch (error) {
+                console.error(`Error fetching book ${reservation.bookId}:`, error);
+              }
+
+              try {
+                const user = await getUserById(reservation.userId);
+                if (user && user.fullName) {
+                  userName = user.fullName;
+                }
+              } catch (error) {
+                console.error(`Error fetching user ${reservation.userId}:`, error);
+              }
+
+              return {
+                ...reservation,
+                bookTitle,
+                userName,
+              };
+            })
+          );
+
+          allReservations = [...allReservations, ...updatedReservations];
+        } else {
+          break; // Stop if no more data
+        }
+      }
+
+      // Sort by latest reservation date
+      allReservations.sort((a, b) => new Date(b.reservationDate) - new Date(a.reservationDate));
+
+      setReservations(allReservations);
     } catch (error) {
-      console.error("Error fetching reservations:", error);
+      console.error("Error fetching all reservations:", error);
     }
   };
-  
 
   const handleApprove = async (id, userId, bookId) => {
     try {
       await ReservationService.updateReservation(id, { status: "COMPLETED" });
-  
-      const borrowDate = new Date().toISOString(); // Convert to ISO format
+
+      // const borrowDate = new Date().toISOString(); 
       const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 30); // Add 30 days
-      const dueDateISO = dueDate.toISOString(); // Convert to ISO format
-      const status = "BORROWED";
-  
-      // Call Borrow Service to create a borrow record
-      await BorrowService.createBorrowRecord({
-        userId,
-        bookId,
-        borrowDate,
-        dueDate: dueDateISO, // Use formatted date
-        status,
-      });
-  
+      dueDate.setDate(dueDate.getDate() + 30);
+      // const dueDateISO = dueDate.toISOString();
+
+      // await BorrowService.createBorrowRecord({
+      //   userId,
+      //   bookId,
+      //   borrowDate,
+      //   dueDate: dueDateISO,
+      //   status: "BORROWED",
+      // });
+
       setReservations((prev) =>
         prev.map((reservation) =>
           reservation.id === id ? { ...reservation, status: "COMPLETED" } : reservation
         )
       );
-      Swal.fire("Approved!", "Reservation has been approved and borrow record created.", "success");
+      Swal.fire("Approved!", "Reservation has been approved.", "success");
     } catch (error) {
       console.error("Error approving reservation:", error);
       Swal.fire("Error", "Failed to approve reservation.", "error");
     }
   };
-  
 
   const handleCancel = async (id) => {
     try {
@@ -112,11 +119,16 @@ const Reservation = () => {
     }
   };
 
+  // Apply search filter before pagination
   const filteredReservations = reservations.filter(
     (reservation) =>
       reservation.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       reservation.bookTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Apply pagination: Show only 10 records per page
+  const paginatedReservations = filteredReservations.slice(page * pageSize, (page + 1) * pageSize);
+  const totalPages = Math.ceil(filteredReservations.length / pageSize);
 
   return (
     <div className="container mt-4">
@@ -132,7 +144,10 @@ const Reservation = () => {
                   style={{ width: "200px" }}
                   placeholder="Search by member or book"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPage(0); // Reset to first page on new search
+                  }}
                 />
                 <span className="input-group-text bg-primary text-white">
                   <Search size={20} />
@@ -141,7 +156,6 @@ const Reservation = () => {
             </div>
 
             <div className="table-responsive">
-            </div>
               <table className="table table-bordered table-hover">
                 <thead className="table-dark">
                   <tr>
@@ -154,12 +168,12 @@ const Reservation = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredReservations.map((reservation) => (
+                  {paginatedReservations.map((reservation) => (
                     <tr key={reservation.id}>
                       <td>{reservation.userId}</td>
                       <td>{reservation.userName}</td>
                       <td>{reservation.bookTitle}</td>
-                      <td>{reservation.reservationDate}</td>
+                      <td>{new Date(reservation.reservationDate).toLocaleString()}</td>
                       <td>
                         <span
                           className={`badge ${
@@ -196,6 +210,8 @@ const Reservation = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
             <div className="d-flex justify-content-between mt-3">
               <button
                 className="btn btn-secondary"
@@ -214,6 +230,7 @@ const Reservation = () => {
               >
                 Next
               </button>
+            </div>
           </div>
         </div>
       </div>

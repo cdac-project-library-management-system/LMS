@@ -98,8 +98,8 @@ const Layout = ({ children }) => {
             </Link>
           </Button>
           <Button variant="" className="mb-3 w-100 text-start">
-            <Link to="/admin/Transaction" style={{ textDecoration: "#c4c4c4", color: "inherit", display: "block", width: "100%" }}>
-              Transactions
+            <Link to="/admin/borrowedbooks" style={{ textDecoration: "#c4c4c4", color: "inherit", display: "block", width: "100%" }}>
+              Borrowed Books
             </Link>
           </Button>
           <Button variant="" className="mb-3 w-100 text-start">

@@ -83,7 +83,7 @@ const Transaction = () => {
         <div className="col-lg-10 col-md-9 col-12">
           <div className="bg-white p-4 rounded shadow-sm">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h3 className="font-weight-bold text-dark">Transactions</h3>
+              <h3 className="font-weight-bold text-dark">Borrowed Books By User</h3>
               <div className="d-flex">
                 <input
                   type="text"
@@ -104,12 +104,9 @@ const Transaction = () => {
               <table className="table table-bordered table-hover">
                 <thead className="table-dark">
                   <tr>
-                    <th>Member</th>
-                    <th>Book</th>
-                    <th>Issue Date</th>
-                    <th>Due Date</th>
-                    <th>Return Date</th>
-                    <th>Status</th>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Borrow Records</th>
                   </tr>
                 </thead>
                 <tbody>

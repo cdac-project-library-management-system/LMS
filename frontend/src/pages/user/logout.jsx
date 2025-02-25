@@ -12,9 +12,7 @@ const LogoutPage = () => {
       setMessage(response.message);
 
       // Stay on the page for 5 seconds, then redirect
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
+      navigate("/login");
     };
 
     logout();

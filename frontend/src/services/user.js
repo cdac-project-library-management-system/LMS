@@ -21,12 +21,12 @@ export async function getUsers() {
     });
     // Check if response contains an array
     if (Array.isArray(response.data)) {
-      return response.data; // ✅ Return as expected
+      return response.data; // Return as expected
     } else if (response.data && Array.isArray(response.data.items)) {
-      return response.data.items; // ✅ Adjust if API wraps it inside `items`
+      return response.data.items; // Adjust if API wraps it inside `items`
     } else {
       console.error("Unexpected response format:", response.data);
-      return []; // ✅ Return empty array to prevent crash
+      return []; // Return empty array to prevent crash
     }
   } catch (ex) {
     console.error("Error fetching users:", ex);

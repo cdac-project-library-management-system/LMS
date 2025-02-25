@@ -28,7 +28,7 @@ const BorrowedBooks = () => {
         // Fetch book details for each borrowed book
         const booksWithDetails = await Promise.all(
           borrowedBooks.map(async (record) => {
-            if (!record.book_id) {
+            if (!record.bookId) {
               console.error(`Missing bookId for record:`, record);
               return {
                 id: record.id,
@@ -40,7 +40,7 @@ const BorrowedBooks = () => {
             }
     
             try {
-              console.log(`Fetching book details for bookId: ${record.book_id}`);
+              console.log(`Fetching book details for bookId: ${record.bookId}`);
               const book = await BookService.getBookById(record.bookId);
               return {
                 id: record.id,

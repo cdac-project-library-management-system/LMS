@@ -8,7 +8,7 @@ import ForgotPassword from './pages/user/ForgotPassword';
 import BorrowedBooks from './pages/user/BorrowingHistory';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
-import './styles/global.css'; // Import global styles
+import './styles/global.css';
 import UserDashboard from './pages/user/UserDashboard';
 import BookInfo from './pages/user/BookInfo';
 import BrowseCategoriesPage from './pages/user/BrowseCategoriesPage';
@@ -16,11 +16,10 @@ import BookReviewPage from './pages/user/BookReviewPage';
 import BookDetailsPage from './pages/admin/BookDetailsPage';
 import MemberDetailsPage from './pages/admin/MemberDetails';
 import EditUserPage from './pages/admin/EditUserPage';
-import AddBookPage from './pages/admin/AddBookPage';
+import AddBookPage from './pages/admin/AddBookPage'; 
 import EditBookPage from './pages/admin/EditBookDetailsPage';
 import FinesPage from './pages/admin/FinePage';
 import ReservationPage from './pages/admin/ReservationPage';
-import TransactionPage from './pages/admin/TransactionPage';
 import ReviewPage from './pages/admin/BookReviewPage';
 import ChangePassword from './pages/user/profile-management/changepass';
 import FineManagement from './pages/user/payment/finepaymentcard';
@@ -30,8 +29,8 @@ import { ToastContainer } from 'react-toastify';
 
 
 import Dashboard from './pages/admin/DashboardPage';
-
-
+import BorrowedHistory from './pages/admin/BorrowedHistory';
+import BorrowHistoryOfUser from './pages/admin/BorrowHistoryOfUser';
 
 
 function App() {
@@ -64,7 +63,8 @@ function App() {
        <Route path="/admin/AddBook" element={<AddBookPage/>}/>
        <Route path="/admin/EditBook/:id" element={<EditBookPage/>}/>
        <Route path="/admin/Fines" element={<FinesPage/>} />
-       <Route path="/admin/Transaction" element={<TransactionPage/>}/>
+       <Route path="/admin/borrowedbooks" element={<BorrowedHistory/>}/>
+       <Route path="/admin/borrowedhistory/:userId" element={<BorrowHistoryOfUser/>}/>
        <Route path="/admin/BookReviews" element={<ReviewPage/>}/>
        <Route path="/admin/Dashboard" element={<Dashboard/>} />
        <Route path="/admin/AddCategory" element={<AddCategory/>} />

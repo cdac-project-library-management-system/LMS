@@ -1,86 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FinePaymentCard from "../../../components/user/payment/finepaymentcard";
-import { Container, Row, Col } from "react-bootstrap";
-import Layout from '../../../components/user/layout/MainLayout';
-import { Columns, Grid } from "react-bootstrap-icons";
+import { Row, Col } from "react-bootstrap";
+import Layout from "../../../components/user/layout/MainLayout";
+import FineService from "../../../services/FineService";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FineManagement = () => {
-  const fines = [
-    {
-      BookId:"1",
-      BorrowedBook: "Data Structures",
-      amount: 100,
-      dueDate: "2025-02-10",
-      dayspastdue: 50,
-      reason: "Late Return",
-    },
-    {
-      BookId:"2",
-      BorrowedBook: "Operating Systems",
-      amount: 100,
-      dueDate: "2025-02-12",
-      dayspastdue: 40,
-      reason: "Lost Book",
-    },
-    {
-      BookId:"3",
-      BorrowedBook: "Algorithms",
-      amount: 100,
-      dueDate: "2025-02-15",
-      dayspastdue: 30,
-      reason: "Damaged Book",
-    },
-    {
-      BookId:"4",
-      BorrowedBook: "Data Structures",
-      amount: 80,
-      dueDate: "2025-02-10",
-      dayspastdue: 50,
-      reason: "Late Return",
-    },
-    {
-      BookId:"5",
-      BorrowedBook: "Operating Systems",
-      amount: 90,
-      dueDate: "2025-02-12",
-      dayspastdue: 40,
-      reason: "Lost Book",
-    },
-    {
-      BookId:"6",
-      BorrowedBook: "Algorithms",
-      amount: 90,
-      dueDate: "2025-02-15",
-      dayspastdue: 30,
-      reason: "Damaged Book",
-    },
-    {
-      BookId:"5",
-      BorrowedBook: "Operating Systems",
-      amount: 90,
-      dueDate: "2025-02-12",
-      dayspastdue: 40,
-      reason: "Lost Book",
-    },
-    {
-      BookId:"6",
-      BorrowedBook: "Algorithms",
-      amount: 95,
-      dueDate: "2025-02-15",
-      dayspastdue: 30,
-      reason: "Damaged Book",
-    },
-  ];
+  const [fines, setFines] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserFines();
+  }, []);
+
+  const fetchUserFines = async () => {
+    try {
+      setLoading(true);
+      const response = await FineService.getUserFines();
+      console.log("Fines Response:", response); // Debugging
+  
+      // Filter out fines that are PAID
+      const unpaidFines = (response.items || []).filter(fine => fine.status !== "PAID");
+  
+      setFines(unpaidFines);
+    } catch (error) {
+      console.error("Error fetching user fines:", error);
+      toast.error("Failed to fetch fines");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   return (
     <Layout>
-      <Row className="justify-content-center" style={{ paddingTop: "30px" }}>
-        {fines.map((fine) => (
-          <Col xs={12} sm={6} md={6} lg={4} key={fine.BookId} className="mb-4 d-flex justify-content-center">
-            <FinePaymentCard fineDetails={fine} />
+      <ToastContainer position="top-right" autoClose={3000} />
+      
+      {loading ? (
+        <div className="text-center" style={{ paddingTop: "30px" }}>Loading fines...</div>
+        ) : fines.length > 0 ? (
+        <Row className="justify-content-center" style={{ paddingTop: "30px" }}>
+          {fines.map((fine) => (
+            <Col xs={12} sm={6} md={6} lg={4} key={fine.id} className="mb-4 d-flex justify-content-center">
+              <FinePaymentCard fineDetails={fine} />
+            </Col>
+          ))}
+        </Row>
+        ) : (
+        // Only show message if there are no unpaid fines
+        <Row className="justify-content-center" style={{ paddingTop: "30px" }}>
+          <Col xs={12} className="text-center">
+            <h4 className="fw-bold text-success">You have no pending fines.</h4>
           </Col>
-        ))}
-      </Row>
+        </Row>
+      )}
+
     </Layout>
   );
 };
