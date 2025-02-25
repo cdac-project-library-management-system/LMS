@@ -48,8 +48,8 @@ const Layout = ({ children }) => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu align="" style={{ backgroundColor: "#e6bfbe" }}>
-            <Dropdown.Item href="/profile">Profile</Dropdown.Item>
-            <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+            <Dropdown.Item href="/admin/Dashboard">Profile</Dropdown.Item>
+            <Dropdown.Item href="/admin/Dashboard">Settings</Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item href="/logout">Logout</Dropdown.Item>
           </Dropdown.Menu>

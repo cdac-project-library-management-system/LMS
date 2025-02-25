@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Form, Button, Card, Alert, Spinner, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from 'react-toastify'; // Import Toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 import AuthService from '../../../services/AuthService';
 
 const RegisterForm = () => {
@@ -11,13 +13,22 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [profilePicUrl, setProfilePicUrl] = useState('');
+  const [profilePic, setProfilePic] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleProfilePicChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfilePic(file);
+      setPreviewUrl(URL.createObjectURL(file)); // Preview image
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,22 +39,27 @@ const RegisterForm = () => {
       return;
     }
 
-    const userData = { 
-      fullName: name,  // Ensure it matches backend DTO field 
-      email:email, 
-      password:password, 
-      phoneNumber: phone, 
-      address:address, 
-      profilePicUrl 
-    };
-    
+    const formData = new FormData();
+    formData.append('fullName', name);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('phoneNumber', phone);
+    formData.append('address', address);
+    if (profilePic) {
+      formData.append('profilePic', profilePic);
+    }
+
     setLoading(true);
 
     try {
-      await AuthService.register(userData);
-      navigate('/login'); // Redirect to login after successful registration
+      await AuthService.register(formData);
+      toast.success('User registered successfully!', { position: 'top-right', autoClose: 3000 }); // Toastify success message
+      setTimeout(() => {
+        navigate('/login'); // Redirect to login after 3 seconds
+      }, 3000);
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed. Please try again.');
+      toast.error('Registration failed!', { position: 'top-right', autoClose: 3000 }); // Toastify error message
     } finally {
       setLoading(false);
     }
@@ -105,14 +121,18 @@ const RegisterForm = () => {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formProfilePicUrl" className="mb-3">
-                  <Form.Label>Profile Picture URL</Form.Label>
+                <Form.Group controlId="formProfilePic" className="mb-3">
+                  <Form.Label>Profile Picture</Form.Label>
                   <Form.Control 
-                    type="text" 
-                    placeholder="Enter image URL" 
-                    value={profilePicUrl} 
-                    onChange={(e) => setProfilePicUrl(e.target.value)} 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleProfilePicChange} 
                   />
+                  {previewUrl && (
+                    <div className="mt-2 text-center">
+                      <img src={previewUrl} alt="Profile Preview" className="rounded-circle" style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+                    </div>
+                  )}
                 </Form.Group>
 
                 <Form.Group controlId="formPassword" className="mb-3">
